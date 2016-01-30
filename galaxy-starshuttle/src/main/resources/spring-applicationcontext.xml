@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-lazy-init="true" default-autowire="byName">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.dianping"/>
+
+    <bean name="placeholder" lazy-init="false" class="com.dianping.lion.client.InitializeConfig">
+    </bean>
+
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <!--<property name="driverClassName" value="${JDBC.driver}"/>-->
+        <!--<property name="username" value="${galax-halley.JDBC.username}"/>-->
+        <!--<property name="password" value="${JDBC.password}"/>-->
+        <!--<property name="url" value="${JDBC.url}"/>-->
+    <!--</bean>-->
+
+
+    <bean id="dataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+
+        <property name="driverClass" value="${galaxy-halley.JDBC.driver}"></property>
+        <property name="jdbcUrl" value="${galaxy-halley.JDBC.url}"></property>
+        <property name="user" value="${galaxy-halley.JDBC.username}"></property>
+        <property name="password" value="${galaxy-halley.JDBC.password}"></property>
+        <property name="initialPoolSize" value="8"></property>
+        <property name="minPoolSize" value="5"></property>
+        <property name="maxPoolSize" value="10"></property>
+        <property name="maxIdleTime" value="140"></property>
+        <property name="acquireIncrement" value="3"></property>
+        <property name="idleConnectionTestPeriod" value="60"></property>
+        <property name="acquireRetryAttempts" value="20"></property>
+        <property name="breakAfterAcquireFailure" value="false"></property>
+        <property name="testConnectionOnCheckout" value="false"></property>
+    </bean>
+
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:sqlmap-config.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="baseDAOImpl" class="com.dianping.data.warehouse.core.dao.impl.BaseDAOImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+
+
+</beans>

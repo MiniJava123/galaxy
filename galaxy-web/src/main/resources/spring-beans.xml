@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:pigeon="http://code.dianping.com/schema/pigeon"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://code.dianping.com/schema/pigeon
+       http://code.dianping.com/schema/pigeon/pigeon-service-2.0.xsd"
+       default-lazy-init="true" default-autowire="byName">
+
+    <pigeon:annotation/>
+    <context:annotation-config/>
+    <context:component-scan base-package="com.dianping"/>
+
+    <import resource="spring-applicationcontext.xml"/>
+
+    <bean name="placeholder" lazy-init="false" class="com.dianping.lion.client.InitializeConfig">
+    </bean>
+
+    <bean id="baseDAOImpl" class="com.dianping.data.warehouse.core.dao.impl.BaseDAOImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+
+    <bean id="aclService" class="com.dianping.data.warehouse.core.service.impl.ACLServiceImpl">
+        <property name="aclUrl" value="${galaxy.acl_rul}"/>
+    </bean>
+
+    <bean id="aclFilter" class="com.dianping.data.warehouse.web.filter.AclFilter"/>
+
+    <bean id="handlerMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="hive">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.HiveHandler" parent="abstarctHandler"/>
+                </entry>
+                <entry key="hbase">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.HbaseHandler" parent="abstarctHandler"/>
+                </entry>
+                <entry key="greenplum">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.GreenPlumHandler"
+                          parent="abstarctHandler"/>
+                </entry>
+                <entry key="mongo">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.MongoHandler" parent="abstarctHandler"/>
+                </entry>
+                <entry key="mysql">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.MySQLHandler" parent="abstarctHandler"/>
+                </entry>
+                <entry key="salesforce">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.SalesforceHandler"
+                          parent="abstarctHandler"/>
+                </entry>
+                <entry key="sqlserver">
+                    <bean class="com.dianping.data.warehouse.core.handler.impl.SQLServerHandler"
+                          parent="abstarctHandler"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="abstarctHandler" abstract="true" class="com.dianping.data.warehouse.core.handler.AbstractHandler">
+        <property name="taskService" ref="taskService"/>
+        <property name="mcMetaService" ref="mcMetaService"/>
+    </bean>
+
+    <pigeon:reference id="taskService" timeout="60000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.halley.service.TaskService"/>
+
+    <pigeon:reference id="taskPublish" timeout="60000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.halley.service.TaskPublish"/>
+
+    <pigeon:reference id="instanceService" timeout="60000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.halley.service.InstanceService"/>
+
+    <pigeon:reference id="monitorService" timeout="60000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.halley.service.MonitorService"/>
+
+    <pigeon:reference id="mercuryService" timeout="30000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.masterdata.service.MercuryService"/>
+
+    <pigeon:reference id="mcMetaService" timeout="30000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.masterdata.service.McMetaService"/>
+
+    <pigeon:reference id="aclInfoService" timeout="30000" serialize="hessian" callType="sync"
+                      interface="com.dianping.data.warehouse.masterdata.service.AclInfoService"/>
+
+    <bean id="commonService" class="com.dianping.data.warehouse.core.service.impl.CommonServiceImpl">
+        <property name="monitorService" ref="monitorService"/>
+    </bean>
+
+    <bean id="tableService" class="com.dianping.data.warehouse.core.service.impl.TableServiceImpl">
+        <property name="mcMetaService" ref="mcMetaService"/>
+        <property name="mercuryService" ref="mercuryService"/>
+    </bean>
+
+    <bean id="authorityService" class="com.dianping.data.warehouse.core.service.impl.AuthorityServiceImpl">
+    </bean>
+
+    <bean id="jobMonitorService" class="com.dianping.data.warehouse.core.service.impl.JobMonitorServiceImpl">
+        <property name="instanceService" ref="instanceService"/>
+    </bean>
+
+    <bean id="jobManageService" class="com.dianping.data.warehouse.core.service.impl.JobManageServiceImpl">
+        <property name="taskService" ref="taskService"/>
+    </bean>
+
+    <bean id="autoBuildTabService" class="com.dianping.data.warehouse.core.service.impl.AutoBuildTabServiceImpl">
+        <property name="mcMetaService" ref="mcMetaService"/>
+        <property name="mercuryService" ref="mercuryService"/>
+    </bean>
+
+    <bean id="autoETLServiceImpl" class="com.dianping.data.warehouse.core.service.impl.AutoETLServiceImpl">
+        <property name="mcMetaService" ref="mcMetaService"/>
+        <property name="mercuryService" ref="mercuryService"/>
+        <property name="aclInfoService" ref="aclInfoService"/>
+    </bean>
+
+
+</beans>
+

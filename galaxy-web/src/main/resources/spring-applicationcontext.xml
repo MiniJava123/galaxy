@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true" default-autowire="byName">
+
+    <bean id="dataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+
+        <property name="driverClass" value="${galaxy.JDBC.driver}"></property>
+        <property name="jdbcUrl" value="${galaxy.JDBC.url}"></property>
+        <property name="user" value="${galaxy.JDBC.username}"></property>
+        <property name="password" value="${galaxy.JDBC.password}"></property>
+
+        <!-- 详细参数说明参见database-config.properties -->
+        <property name="initialPoolSize" value="3"></property>
+        <property name="minPoolSize" value="5"></property>
+        <property name="maxPoolSize" value="10"></property>
+        <property name="maxIdleTime" value="140"></property>
+        <property name="acquireIncrement" value="3"></property>
+        <property name="idleConnectionTestPeriod" value="60"></property>
+        <property name="acquireRetryAttempts" value="20"></property>
+        <property name="breakAfterAcquireFailure" value="false"></property>
+        <property name="testConnectionOnCheckout" value="false"></property>
+        <!--连接池中保留的最小连接数。-->
+
+        <!--连接池中保留的最大连接数。Default: 15 -->
+
+        <!--初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+
+        <!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+
+        <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+
+        <!--JDBC的标准参数，用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements
+         属于单个connection而不是整个连接池。所以设置这个参数需要考虑到多方面的因素。
+         如果maxStatements与maxStatementsPerConnection均为0，则缓存被关闭。Default: 0-->
+
+        <!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+
+        <!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->
+
+        <!--获取连接失败将会引起所有等待连接池来获取连接的线程抛出异常。但是数据源仍有效
+         保留，并在下次调用getConnection()的时候继续尝试获取连接。如果设为true，那么在尝试
+         获取连接失败后该数据源将申明已断开并永久关闭。Default: false-->
+
+        <!--因性能消耗大请只在需要的时候使用它。如果设为true那么在每个connection提交的
+         时候都将校验其有效性。建议使用idleConnectionTestPeriod或automaticTestTable
+         等方法来提升连接测试的性能。Default: false -->
+    </bean>
+
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:sqlmap-config.xml"/>
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+</beans>

@@ -1,0 +1,505 @@
+<div class="row" ng-controller="CreateTableCtrl">
+<div class="row">
+<div class="row">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <div class="col-xs-12  col-sm-12">
+            <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+        </div>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</div>
+<div class="col-xs-12">
+    <form class="form-horizontal row ">
+        <div class="col-xs-12  col-sm-1"></div>
+        <div class="col-xs-12 col-sm-10 form_border height80">
+            <label for="inputWarning1"
+                   class="col-xs-12 col-sm-1 control-label no-padding-right">
+                数据库名
+            </label>
+
+            <div class="col-xs-12  col-sm-2">
+			    <span class="block input-icon input-icon-right">
+                    <select name="dataBaseName" class="width-90" ng-model="searchCondition.sourceDBName"
+                            ng-options="sec for sec in sourceDBNames | orderBy:'toString()'" required></select>
+			    </span>
+            </div>
+            <label for="inputWarning2"
+                   class="col-xs-12 col-sm-1 control-label no-padding-right">
+                表名
+            </label>
+
+            <div class="col-xs-12  col-sm-3 marginR30">
+                <span class="block input-icon input-icon-right">
+                    <!--<input type="text" class="width-90" ng-model="searchCondition.sourceTableName">-->
+                    <input type="text" class="width-90" ng-model="searchCondition.sourceTableName"
+                           typeahead="table for table in allTables|filter:$viewValue|limitTo:30"
+                           ng-keypress="enterPress($event)">
+                </span>
+            </div>
+            <div class="col-sm-2"></div>
+            <button class="btn btn-primary btn-sm col-sm-1" ng-click="submitSearch()"
+                    ng-disabled="isLoading">
+                <i class="icon-search"></i>查询
+            </button>
+            <!--<button class="btn btn-success btn-sm col-sm-1" ng-click="cancelSearch()">-->
+            <!--<i class="icon-undo"></i> 重置-->
+            <!--</button>-->
+        </div>
+    </form>
+</div>
+<div class="col-xs-12 text-center" ng-show="isLoading">
+    <div class="loading" style="color: #000000;width: auto">{{loadingMsg}}</div>
+</div>
+
+<div class="col-xs-12" ng-show="hasGetTableInfo">
+
+<form class="form-horizontal row">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <h4 class="header smaller lighter blue"><span><strong>表信息</strong></span></h4>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</form>
+<form class="form-horizontal row">
+    <div class="form-group">
+        <div class="col-xs-12  col-sm-1"></div>
+        <label for="inputWarning1"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            数据库名
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+                <span class="block input-icon input-icon-right">
+                    <input type="text" id="inputWarning1" ng-model="buildTableInfo.table.dbName" class="width-90"
+                           disabled>
+                </span>
+        </div>
+        <label for="inputWarning2"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            表的注释
+        </label>
+
+        <div class="col-xs-12  col-sm-2 ">
+            <input class="width-90 " type="text" id="inputWarning2" ng-model="buildTableInfo.tableComment">
+                <span class=" light-red " tooltip-placement="top" tooltip-html-unsafe="表的注释必填">
+                    <strong>*</strong>
+                </span>
+        </div>
+        <label for="inputWarning3"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            路径
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+            <input type="text" id="inputWarning3" ng-model="buildTableInfo.table.tableLocation"
+                   ng-disabled="buildTableInfo.table.tableType=='MANAGED_TABLE'" class="width-90"
+                    >
+                <span class=" light-red " tooltip-placement="top" tooltip-html-unsafe="表的路径必填">
+                    <strong>*</strong>
+                </span>
+        </div>
+        <div class="col-xs-12  col-sm-1"></div>
+    </div>
+</form>
+<form class="form-horizontal row">
+    <div class="form-group">
+        <div class="col-xs-12  col-sm-1"></div>
+        <label for="inputWarning4"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            表的类型
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+                <span class="block input-icon input-icon-right">
+                    <input type="text" id="inputWarning4" ng-model="buildTableInfo.table.tableType" class="width-90"
+                           disabled>
+                </span>
+        </div>
+        <label for="inputWarning5"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            开发者
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+                <span class="block input-icon input-icon-right">
+                    <input type="text" class="width-90" ng-model="developer" ng-disabled="true"
+                           placeholder="输入姓名或拼音"
+                           typeahead=" developer as developer.Text for developer in developers | filter:$viewValue"
+                           class="width-100">
+                </span>
+        </div>
+        <label for="inputWarning6"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            刷新类型
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+            <select id="inputWarning6" ng-model="buildTableInfo.refreshType" class="width-90"
+                    ng-options="type.ID as type.Text for type in tableRefreshTypes"></select>
+                <span class=" light-red " tooltip-placement="top" tooltip-html-unsafe="表的刷新类型必填">
+                    <strong>*</strong>
+                </span>
+        </div>
+        <div class="col-xs-12  col-sm-1"></div>
+    </div>
+</form>
+<form class="form-horizontal row">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <h4 class="header smaller lighter blue"><span><strong>授权信息</strong></span></h4>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</form>
+<form class="form-horizontal row">
+    <div class="form-group">
+        <div class="col-xs-12  col-sm-1"></div>
+        <label for="inputWarning8"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            线上组帐号
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+                <span class="block input-icon input-icon-right">
+                    <select id="inputWarning8" ng-model="onLineGroup" class="width-90"
+                            ng-options="group for group in onLineGroupList"></select>
+                </span>
+        </div>
+        <label for="inputWarning9"
+               class="col-xs-12 col-sm-1 control-label no-padding-right">
+            线下组帐号
+        </label>
+
+        <div class="col-xs-12  col-sm-2">
+                <span class="block input-icon input-icon-right">
+                    <select id="inputWarning9" ng-model="offLineGroup" class="width-90"
+                            ng-options="group for group in offLineGroupList"></select>
+                </span>
+        </div>
+        <div class="col-xs-12  col-sm-1"></div>
+    </div>
+    <div class="form-group row " ng-show="onLineGroupList.length == 0">
+        <div class="col-xs-12  col-sm-2"></div>
+        <div class="col-xs-12  col-sm-10">
+            <span style="color: red">提示: 该登录用户没有线上组帐号，如果建表将没有该线上表的读写权限，请先加入自己的用户组</span>
+        </div>
+    </div>
+    <div class="form-group row " ng-show="offLineGroupList.length == 0">
+        <div class="col-xs-12  col-sm-2"></div>
+        <div class="col-xs-12  col-sm-10">
+            <span style="color: red">提示: 该登录用户没有线下组帐号，如果建表将没有该线下表的读写权限，请先加入自己的用户组</span>
+        </div>
+    </div>
+</form>
+<form class="form-horizontal row">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <h4 class="header smaller lighter blue"><span><strong>列信息</strong></span></h4>
+    </div>
+</form>
+<div class="row bottom30">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <div class="table-responsive" style="border: lightblue thin solid">
+            <div class="dataTables_wrapper" role="grid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dataTables_length">
+                            <label>
+                                每页显示
+                                <select ng-model="table.selectedRecordPerPage"
+                                        ng-options="rpp for rpp in table.recordPerPageOptions"
+                                        required></select>
+                                条记录
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_filter">
+                            <label>
+                                过滤:
+                                <input type="text" ng-model="table.query"></label>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover dataTable" width="100%"
+                       style="table-layout:fixed;">
+                    <thead>
+                    <tr role="row">
+                        <th width="10%">序号</th>
+                        <th width="20%" class="{{table.getSortingClass('columnName')}}"
+                            ng-click="table.predicate = 'columnName'; table.reverse=!table.reverse">
+                            列名
+                        </th>
+                        <th width="20%" style="word-wrap:break-word;" class="{{table.getSortingClass('columnType')}}"
+                            style="width:200px;"
+                            ng-click="table.predicate = 'columnType'; table.reverse=!table.reverse">
+                            类型
+                        </th>
+                        <th width="50%">注释</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="table in table.displayedDataList.slice(table.startIndex-1, table.endIndex)">
+                        <td width="10%">{{getSequenceNum($index)}}</td>
+                        <td width="20%">{{table.columnName}}</td>
+                        <td width="20%">
+                            <input type="text" ng-model="table.columnType" class="width-75" disabled>
+                        </td>
+                        <td width="50%">
+                            <input type="text" ng-model="table.columnComment" class="width-75">
+                                <span class=" light-red " tooltip-placement="top" tooltip-html-unsafe="注释必填">
+                                    <strong>*</strong>
+                                </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="dataTables_info">
+                            展示第{{table.startIndex}}条记录至第{{table.endIndex}}条记录（总计{{table.total}}条记录）
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="dataTables_paginate paging_bootstrap">
+                            <ul class="pagination">
+                                <li class="{{table.getDisableLabelforPrevious()}}"><a href=""
+                                                                                      ng-click="table.gotoFirstPage()"><i
+                                        class="icon-double-angle-left"></i></a></li>
+                                <li class="{{table.getDisableLabelforPrevious()}}"><a href=""
+                                                                                      ng-click="table.previousPage()"><i
+                                        class="icon-angle-left"></i></a></li>
+                                <li ng-repeat="num in table.getCurrentPageNumDisplay()"
+                                    class="{{table.getActiveLabel(num)}}">
+                                    <a href="" ng-click="table.changePage(num)">{{num}}</a>
+                                </li>
+                                <li class="{{table.getDisableLabelforNext()}}"><a href=""
+                                                                                  ng-click="table.nextPage()"><i
+                                        class="icon-angle-right"></i></a></li>
+                                <li class="{{table.getDisableLabelforNext()}}"><a href=""
+                                                                                  ng-click="table.gotoLastPage()"><i
+                                        class="icon-double-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</div>
+<form class="form-horizontal row" ng-show="buildTableInfo.partitionColumnList.length != 0">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <h4 class="header smaller lighter blue"><span><strong>分区字段信息</strong></span></h4>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</form>
+<div class="row bottom30" ng-show="buildTableInfo.partitionColumnList.length != 0">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <table class="table table-striped table-bordered table-hover dataTable"
+               width="100%"
+               style="table-layout:fixed;">
+            <thead>
+            <tr role="row">
+                <th width="10%">序号</th>
+                <th width="20%">列名</th>
+                <th width="20%">类型</th>
+                <th width="50%">注释</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="partition in buildTableInfo.partitionColumnList">
+                <td width="10%">{{$index}}</td>
+                <td width="20%">{{partition.columnName}}</td>
+                <td width="20%">{{partition.columnType}}</td>
+                <td width="50%">
+                    <input type="text" ng-model="partition.columnComment" class="width-75">
+                        <span class=" light-red " tooltip-placement="top" tooltip-html-unsafe="注释必填">
+                            <strong>*</strong>
+                        </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</div>
+<div class="row bottom10">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-xs-12  col-sm-10">
+        <accordion close-others="true">
+            <accordion-group is-open="isopen">
+                <accordion-heading>
+                    <i class="pull-left bigger-110"
+                       ng-class="{'icon-angle-down': isopen, 'icon-angle-right': !isopen0}"></i>
+                    存储信息
+                </accordion-heading>
+                <div class="col-xs-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="inputWarning10"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                SerDe库
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning10"
+                                               ng-model="buildTableInfo.table.tableSerde" class="width-90" disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning11"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                输入格式
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning11"
+                                               ng-model="buildTableInfo.table.tableInputformat" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning12"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                输出格式
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning12"
+                                               ng-model="buildTableInfo.table.tableOutputformat" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputWarning13"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                分桶数量
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning13"
+                                               ng-model="buildTableInfo.table.tableBucketsNum" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning14"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                分桶列名
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning14"
+                                               ng-model="buildTableInfo.table.tableBucketscol" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning15"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                排序列名
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning15"
+                                               ng-model="buildTableInfo.table.tableSortcol" class="width-90" disabled>
+                                    </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </accordion-group>
+            <accordion-group is-open="isopen1">
+                <accordion-heading>
+                    <i class="pull-left bigger-110"
+                       ng-class="{'icon-angle-down': isopen1, 'icon-angle-right': !isopen0}"></i>
+                    存储描述参数
+                </accordion-heading>
+                <div class="col-xs-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="inputWarning16"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                集合分隔符
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning16" ng-model="collectionDelim"
+                                               class="width-90" disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning17"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                列分隔符
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning17" ng-model="fieldDelim" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning18"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                行分隔符
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning18" ng-model="lineDelim" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputWarning19"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                散列键值分隔符
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning19" ng-model="mapkeyDelim" class="width-90"
+                                               disabled>
+                                    </span>
+                            </div>
+                            <label for="inputWarning20"
+                                   class="col-xs-12 col-sm-2 control-label no-padding-right">
+                                序列化格式
+                            </label>
+
+                            <div class="col-xs-12  col-sm-2">
+                                    <span class="block input-icon input-icon-right">
+                                        <input type="text" id="inputWarning20" ng-model="serializationFormat"
+                                               class="width-90" disabled>
+                                    </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </accordion-group>
+        </accordion>
+    </div>
+    <div class="col-xs-12  col-sm-1"></div>
+</div>
+<div class="row">
+    <div class="col-xs-12  col-sm-1"></div>
+    <div class="col-sm-1">
+        <button class="btn btn-primary btn-sm" ng-click="submitToGetSql()">提交</button>
+    </div>
+    <!--<div class="col-sm-1">-->
+    <!--<button class="btn btn-success btn-sm">配置DQ</button>-->
+    <!--</div>-->
+</div>
+</div>
+
+</div>
+</div>

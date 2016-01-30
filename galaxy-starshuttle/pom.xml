@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>galaxy</artifactId>
+        <groupId>com.dianping.data.warehouse</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dp-galaxy-starshuttle</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.dianping.data.warehouse</groupId>
+            <artifactId>dp-galaxy-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ibatis</groupId>
+            <artifactId>ibatis-sqlmap</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!--<profiles>-->
+        <!--<profile>-->
+            <!--<id>release</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+        <!--</profile>-->
+        <!--<profile>-->
+            <!--<id>qa</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+        <!--</profile>-->
+    <!--</profiles>-->
+
+        <!--<profile>-->
+            <!--<id>release22</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+            <!--<build>-->
+                <!--<filters>-->
+                    <!--<filter>src/main/resources/dbconf_online.properties</filter>-->
+                <!--</filters>-->
+                <!--<plugins>-->
+                    <!--<plugin>-->
+                        <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                        <!--<configuration>-->
+                            <!--<source>1.6</source>-->
+                            <!--<target>1.6</target>-->
+                        <!--</configuration>-->
+                    <!--</plugin>-->
+                    <!--<plugin>-->
+                        <!--<groupId>org.apache.maven.plugins</groupId>-->
+                        <!--<artifactId>maven-antrun-plugin</artifactId>-->
+                        <!--<version>1.7</version>-->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<phase>package</phase>-->
+                                <!--<configuration>-->
+                                    <!--<target>-->
+                                        <!--<property name="build.base.dir" value="starshuttle"/>-->
+                                        <!--<property name="classes.dir" value="target/classes"/>-->
+                                        <!--<property name="lib.dir" value="${build.base.dir}/lib"/>-->
+                                        <!--<property name="bin.dir" value="${build.base.dir}/bin"/>-->
+                                        <!--<property name="release.dir" value="release"/>-->
+                                        <!--<property name="src.dir" value="src"/>-->
+
+                                        <!--<delete dir="${build.base.dir}" includeEmptyDirs="true"/>-->
+                                        <!--<delete dir="${release.dir}" includeEmptyDirs="true"/>-->
+
+                                        <!--<mkdir dir="${release.dir}"/>-->
+                                        <!--<mkdir dir="${build.base.dir}"/>-->
+                                        <!--<mkdir dir="${bin.dir}"/>-->
+                                        <!--<mkdir dir="${lib.dir}"/>-->
+
+                                        <!--<copy file="src/main/resources/env22.properties"-->
+                                              <!--tofile="${project.build.outputDirectory}/env.properties"-->
+                                              <!--overwrite="true" />-->
+
+
+                                        <!--<copy todir="${bin.dir}">-->
+                                            <!--<fileset dir="release22-bin"/>-->
+                                        <!--</copy>-->
+
+                                        <!--<chmod file="${bin.dir}/*.sh" perm="755"/>-->
+
+                                        <!--<jar jarfile="${build.base.dir}/lib/starshuttle-0.1.0.jar" basedir="${classes.dir}">-->
+                                        <!--</jar>-->
+
+                                        <!--<dependencyfilesets prefix="starshuttle."/>-->
+
+                                        <!--<copy todir="${lib.dir}" flatten="true">-->
+                                            <!--<fileset refid="starshuttle.maven.project.dependencies"/>-->
+                                        <!--</copy>-->
+                                        <!--<delete>-->
+                                            <!--<fileset dir="${lib.dir}" includes="**/xercesImpl-2.6.2.jar"/>-->
+                                        <!--</delete>-->
+
+                                        <!--<tar destfile="${release.dir}/starshuttle.tar" basedir="${build.base.dir}"/>-->
+                                        <!--<delete dir="${build.base.dir}" includeEmptyDirs="true"/>-->
+                                    <!--</target>-->
+                                <!--</configuration>-->
+                                <!--<goals>-->
+                                    <!--<goal>run</goal>-->
+                                <!--</goals>-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                    <!--</plugin>-->
+                <!--</plugins>-->
+            <!--</build>-->
+        <!--</profile>-->
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <property name="build.base.dir" value="starshuttle"/>
+                                <property name="classes.dir" value="target/classes"/>
+                                <property name="lib.dir" value="${build.base.dir}/lib"/>
+                                <property name="bin.dir" value="${build.base.dir}/bin"/>
+                                <property name="release.dir" value="release"/>
+                                <property name="src.dir" value="src"/>
+
+                                <delete dir="${build.base.dir}" includeEmptyDirs="true"/>
+                                <delete dir="${release.dir}" includeEmptyDirs="true"/>
+
+                                <mkdir dir="${release.dir}"/>
+                                <mkdir dir="${build.base.dir}"/>
+                                <mkdir dir="${bin.dir}"/>
+                                <mkdir dir="${lib.dir}"/>
+
+
+                                <copy todir="${bin.dir}">
+                                    <fileset dir="${env}-bin"/>
+                                </copy>
+
+                                <chmod file="${bin.dir}/*.sh" perm="755"/>
+
+                                <jar jarfile="${build.base.dir}/lib/starshuttle-0.1.0.jar" basedir="${classes.dir}">
+                                </jar>
+
+                                <dependencyfilesets prefix="starshuttle."/>
+
+                                <copy todir="${lib.dir}" flatten="true">
+                                    <fileset refid="starshuttle.maven.project.dependencies"/>
+                                </copy>
+                                <delete>
+                                    <fileset dir="${lib.dir}" includes="**/xercesImpl-2.6.2.jar"/>
+                                </delete>
+
+                                <tar destfile="${release.dir}/starshuttle.tar" basedir="${build.base.dir}"/>
+                                <delete dir="${build.base.dir}" includeEmptyDirs="true"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

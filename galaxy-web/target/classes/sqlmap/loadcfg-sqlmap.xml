@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="loadcfg">
+	<typeAlias type="com.dianping.data.warehouse.domain.model.WormholeDO" alias="load" />
+
+    <resultMap id="load" class="load" >
+        <result property="taskId" column="task_id" />
+        <result property="connectProps" column="connectProps" />
+        <result property="parameterMapStr" column="parameter_map" />
+        <result property="type" column="type" />
+        <result property="conditionCol" column="condition_column" />
+    </resultMap>
+
+	<statement id="getLoadCfgListByID" resultMap="load" parameterClass="java.lang.Integer">
+		SELECT task_id,connectprops,parameter_map,type,condition_column FROM etl_load_cfg WHERE task_id=#id:INTEGER#
+  	</statement>
+
+    <statement id="getReaderCfgByID" resultMap="load" parameterClass="java.lang.Integer">
+		SELECT * FROM etl_load_cfg WHERE task_id=#id:INTEGER# and type='reader'
+  	</statement>
+    
+    <statement id="getOldCfgByID" resultClass="java.util.HashMap" remapResults="true" parameterClass="java.util.HashMap">
+        select * from $queryDB$ where task_id = #taskID#
+    </statement>
+
+    <insert id="insertLoadCfg" parameterClass="java.util.List">
+        INSERT INTO etl_load_cfg
+        (
+        task_id,connectprops,parameter_map,type,condition_column
+        )
+        VALUES
+        <iterate  conjunction ="," >
+            (
+            #load[].taskId#,#load[].connectProps#,#load[].parameterMapStr#,#load[].type#,
+            #load[].conditionCol#
+            )
+        </iterate>
+    </insert>
+
+    <statement id="deleteLoadCfgByID" parameterClass="java.lang.Integer" >
+        delete from etl_load_cfg where task_id=#id:Integer#
+    </statement>
+
+</sqlMap>

@@ -1,0 +1,196 @@
+<div class="modal-header" style="padding-bottom: 9px; padding-top: 9px">
+    <h4 class="modal-title">{{msg.headerText}}</h4>
+</div>
+<div class="modal-body" style="padding-bottom: 5px; padding-top: 5px">
+    <div class="row" style="padding-bottom: 10px">
+        <alert style="margin-bottom:5px" ng-show="alert.isShow" type="alert.type" close="closeAlert()">
+            {{alert.msg}}
+        </alert>
+    </div>
+    <div class="row" style="margin-bottom:5px">
+        <form class="form-vertical" name="queryForm">
+
+            <div class="row" style="margin:0 0 5px 0;">
+                <div class="col-sm-11">
+                    <label class="col-sm-1 control-label textRight" style="padding: 0">任务组</label>
+
+                    <div class="col-sm-2">
+                      <span class="block input-icon input-icon-right">
+                            <select name="group" class="width-100" ng-model="query.group"
+                                    ng-options="taskGroup.ID as taskGroup.Text for taskGroup in taskGroups"
+                                    required></select>
+                      </span>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight" style="padding: 0">执行周期</label>
+
+                    <div class="col-sm-2">
+                    <span class="block input-icon input-icon-right">
+                        <select name="executionCycle" class="width-100" ng-model="query.cycle"
+                                ng-options="k as v for (k,v) in taskPeriods"
+                                required></select>
+                    </span>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight" style="padding: 0">开发者</label>
+
+                    <div class="col-sm-2">
+                        <!--<select chosen class="width-100"-->
+                        <!--allow-single-deselect="true"-->
+                        <!--data-placeholder="choose..."-->
+                        <!--no-results-text="'no results..'"-->
+                        <!--ng-model="developer"-->
+                        <!--ng-options="value for (key,value) in search.developerOptions">-->
+                        <!--<option value=""></option>-->
+                        <!--</select>-->
+                    <span class="block input-icon input-icon-right">
+                        <input type="text" ng-model="query.developer"
+                               placeholder="不限"
+                               typeahead=" developer as developer.Text for developer in developers | filter:$viewValue"
+                               class="width-100">
+        <!--<select class="width-100" name="taskPeriod" ng-model="search.jobDeveloper"-->
+        <!--ng-options="developer.ID as developer.Text for developer in developers" required>-->
+        <!--</select>-->
+                    </span>
+                        <!--<span class="block input-icon input-icon-right">-->
+                        <!--<input type="text" class="width-100" ng-model="developer">-->
+                        <!--</span>-->
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight" style="padding: 0">任务名/ID</label>
+
+                    <div class=" col-sm-2">
+                    <span class="block input-icon input-icon-right">
+                        <input type="text" class="width-100" ng-model="query.taskName">
+                    </span>
+                    </div>
+
+                </div>
+
+                <!--<div class="col-sm-1">-->
+                <button class="btn btn-primary col-sm-1" style="padding: 0"
+                        ng-click="submitQuery()">
+                    查询
+                </button>
+                <!--</div>-->
+            </div>
+
+
+            <!--<div class="row" style="margin:10px 0 0 0">-->
+            <!--<div class="col-sm-11"></div>-->
+            <!--<button class="btn btn-primary btn-sm col-sm-1" style="margin-left: -10px" ng-click="submitQuery()">-->
+            <!--<i class="icon-search"></i>查询-->
+            <!--</button>-->
+            <!--</div>-->
+
+        </form>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12" ng-hide="hideTable" style="padding-left: 18px;padding-right: 18px">
+        <div class="table-header">查询结果</div>
+        <div class="table-responsive">
+            <div class="dataTables_wrapper" role="grid">
+                <div class="row" style="padding-bottom:10px;padding-top:5px;">
+                    <div class="col-sm-6">
+                        <div class="dataTables_length">
+                            <label>每页显示
+                                <select ng-model="table.selectedRecordPerPage"
+                                        ng-options="rpp for rpp in table.recordPerPageOptions" required>
+                                </select> 条记录
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_filter">
+                            <label>过滤: <input type="text" ng-model="table.query"></label>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover dataTable">
+                    <thead>
+                    <tr role="row">
+                        <th>操作
+                        </th>
+                        <th class="{{table.getSortingClass('taskId')}}"
+                            ng-click="table.predicate = 'taskId'; table.reverse=!table.reverse">任务ID
+                        </th>
+                        <th class="{{table.getSortingClass('taskName')}}"
+                            ng-click="table.predicate = 'taskName'; table.reverse=!table.reverse">任务名
+                        </th>
+                        <th class="{{table.getSortingClass('owner')}}"
+                            ng-click="table.predicate = 'owner'; table.reverse=!table.reverse">开发者
+                        </th>
+                        <th class="{{table.getSortingClass('cycle')}}"
+                            ng-click="table.predicate = 'cycle'; table.reverse=!table.reverse">
+                            执行周期
+                        </th>
+                        <!--<th>操作</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="table in table.displayedDataList.slice(table.startIndex-1, table.endIndex)">
+                        <td class="center"><label><input type="checkbox" class="ace" ng-model="table.isSelected"
+                                                         ng-click="setDependence($index)"><span
+                                class="lbl"></span></label>
+                        </td>
+                        <td>{{table.taskId}}</td>
+                        <td>{{table.taskName}}</td>
+                        <td>
+                            {{getDevelopChineseName(table.owner)}}
+                        </td>
+                        <td>
+                            <span class="label {{getExecutionCycleLabel(table.cycle)}}">{{getCycleText(table.cycle)}}</span>
+                        </td>
+                        <!--<td>-->
+                        <!--<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">-->
+
+                        <!--<button class="btn-link red" ng-click="addDependenceTask($index)">-->
+                        <!--<i class="icon-plus bigger-130"></i>-->
+                        <!--</button>-->
+
+                        <!--</div>-->
+                        <!--</td>-->
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row" style="padding-bottom:0px;padding-top:0px;">
+                    <div class="col-sm-5">
+                        <div class="dataTables_info">
+                            展示第{{table.startIndex}}条记录至第{{table.endIndex}}条记录（总计{{table.total}}条记录）
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="dataTables_paginate paging_bootstrap">
+                            <ul class="pagination">
+                                <li class="{{table.getDisableLabelforPrevious()}}">
+                                    <a href="" ng-click="table.gotoFirstPage()">
+                                        <i class="icon-double-angle-left"></i></a></li>
+                                <li class="{{table.getDisableLabelforPrevious()}}">
+                                    <a href="" ng-click="table.previousPage()"><i
+                                            class="icon-angle-left"></i></a></li>
+                                <li ng-repeat="num in table.getCurrentPageNumDisplay()"
+                                    class="{{table.getActiveLabel(num)}}">
+                                    <a href="" ng-click="table.changePage(num)">{{num}}</a>
+                                </li>
+                                <li class="{{table.getDisableLabelforNext()}}">
+                                    <a href="" ng-click="table.nextPage()"><i
+                                            class="icon-angle-right"></i></a></li>
+                                <li class="{{table.getDisableLabelforNext()}}">
+                                    <a href="" ng-click="table.gotoLastPage()"><i
+                                            class="icon-double-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer" style="padding-bottom: 5px; padding-top: 5px">
+    <button type="button" class="btn btn-primary btn-sm" ng-click="ok()">确认</button>
+    <!--<button type="button" class="btn btn-warning btn-sm" ng-click="cancel()">Cancel</button>-->
+</div>
+

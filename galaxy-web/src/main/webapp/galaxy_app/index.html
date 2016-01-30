@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="galaxyApp">
+<head>
+    <meta charset="utf-8"/>
+    <title>Galaxy Platform</title>
+
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- basic styles -->
+
+    <link href="/galaxy_app/lib/ace/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/font-awesome.min.css"/>
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/font-awesome-ie7.min.css"/>
+    <![endif]-->
+
+    <!-- page specific plugin styles -->
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/jquery-ui-1.10.3.custom.min.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/chosen.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/datepicker.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/bootstrap-timepicker.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/daterangepicker.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/colorpicker.css"/>
+
+    <!-- fonts -->
+
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/ace-fonts.css"/>
+
+    <!-- ace styles -->
+
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/ace.min.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/ace-rtl.min.css"/>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/ace-skins.min.css"/>
+
+    <!-- galaxy dialog -->
+    <link rel="stylesheet" href="/galaxy_app/css/galaxy.css"/>
+    <link rel="stylesheet" href="/galaxy_app/css/table_import.css">
+    <link rel="stylesheet" href="/galaxy_app/css/tree.css">
+    <link rel="stylesheet" href="/galaxy_app/css/loading.css">
+    <link rel="stylesheet" href="/galaxy_app/css/topology.css">
+    <link rel="stylesheet" href="/galaxy_app/css/user_guide.css">
+    <link rel="stylesheet" href="/galaxy_app/css/mt_tree.css">
+    <link rel="stylesheet" href="/galaxy_app/css/ng-tags-input.min.css"/>
+    <!--<link rel="stylesheet" href="/galaxy_app/css/ng-tags-input.bootstrap.css"/>-->
+
+
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="/galaxy_app/lib/ace/css/ace-ie.min.css"/>
+
+    <![endif]-->
+
+    <!-- inline styles related to this page -->
+
+    <!--[if !IE]> -->
+
+    <script type="text/javascript">
+        window.jQuery || document.write("<script src='/galaxy_app/lib/ace/js/jquery-2.0.3.min.js'>" + "<" + "/script>");
+    </script>
+
+    <!-- <![endif]-->
+
+    <!--[if IE]>
+    <script type="text/javascript">
+        window.jQuery || document.write("<script src='/galaxy_app/lib/ace/js/jquery-1.10.2.min.js'>" + "<" + "/script>");
+    </script>
+    <![endif]-->
+    <!-- ace settings handler -->
+    <script type="text/javascript" src="/galaxy_app/js/login.js"></script>
+    <!--<script>-->
+    <!--var userVerify = new Global.UserVerify();-->
+    <!--</script>-->
+    <script src="/galaxy_app/lib/ace/js/ace-extra.min.js"></script>
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+    <!--[if lt IE 9]>
+    <script src="/galaxy_app/lib/ace/js/html5shiv.js"></script>
+    <script src="/galaxy_app/lib/ace/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body ng-controller="MonitorCtrl">
+<div class="navbar navbar-default" id="navbar">
+    <script type="text/javascript">
+        try {
+            ace.settings.check('navbar', 'fixed')
+        } catch (e) {
+        }
+    </script>
+
+    <div class="navbar-container" id="navbar-container">
+        <div class="navbar-header pull-left">
+            <a href="http://data.dp/" class="navbar-brand">
+                数据平台
+                <!--数据平台-->
+            </a>
+            <!-- /.brand -->
+        </div>
+        <!-- /.navbar-header -->
+        <div class="navbar-header">
+            <span style="margin:10px;font-size: 16px" class="label label-transparent">开发服务</span>
+        </div>
+
+        <!-- /.navbar-header -->
+
+        <div class="navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+                <li class="light-blue">
+                    <a data-toggle="dropdown" href="#" target="_self" class="dropdown-toggle">
+                        <img class="nav-user-photo" src="/galaxy_app/images/tubiao.png" alt="Jason's Photo"/>
+            <span class="user-info">
+                                    <small>欢迎,</small>
+                                    <span id="userName">Dper</span>
+                                </span>
+
+                        <i class="icon-caret-down"></i>
+                    </a>
+
+                    <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <li>
+                            <a href="http://sys.www.dianping.com/index.aspx">
+                                <i class="icon-off"></i>
+                                退出
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- /.ace-nav -->
+        </div>
+
+        <div class="pull-right" style="margin:10px;color: white;">QQ支持群：343441559</div>
+
+        <div class="pull-right" style="margin:10px;color: white;" ng-bind="monitorMessage"></div>
+
+
+        <!--    <div class="pull-right" style="margin:10px;color: white;">本周值班: {{duty}} {{tel}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>-->
+        <!-- /.navbar-header -->
+    </div>
+    <!-- /.container -->
+</div>
+
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.check('main-container', 'fixed')
+        } catch (e) {
+        }
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+
+        <div class="sidebar" id="sidebar" ng-controller="SidebarCtrl">
+            <script type="text/javascript">
+                try {
+                    ace.settings.check('sidebar', 'fixed')
+                } catch (e) {
+                }
+            </script>
+
+            <ul class="nav nav-list">
+                <li id="tabState0">
+                    <a href="#" class="dropdown-toggle" id="tab0">
+                        <i class="icon-dashboard"></i>
+                        <span class="menu-text"> 任务监控 </span>
+
+                        <b class="arrow icon-angle-down"></b>
+                    </a>
+
+                    <ul class="submenu">
+
+                        <li id="subTabs00">
+                            <a href="#/jobMonitor">
+                                <i class="icon-double-angle-right"></i>
+                                任务监控
+                            </a>
+                        </li>
+
+
+                        <li id="subTabs01">
+                            <a href="#/jobPreRunMonitor">
+                                <i class="icon-double-angle-right"></i>
+                                预跑监控
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li id="tabState1">
+                    <a href="#" class="dropdown-toggle" id="tab1">
+                        <i class="icon-truck"></i>
+                        <span class="menu-text"> 数据传输 </span>
+
+                        <b class="arrow icon-angle-down"></b>
+                    </a>
+
+                    <ul class="submenu">
+                        <li id="subTabs10">
+                            <a href="#/tablelist">
+                                <i class="icon-double-angle-right"></i>
+                                传输管理
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li id="tabState2">
+                    <a href="#" class="dropdown-toggle" id="tab2">
+                        <i class="icon-cogs"></i>
+                        <span class="menu-text">任务管理</span>
+                        <b class="arrow icon-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li id="subTabs20">
+                            <a href="#/jobManage">
+                                <i class="icon-double-angle-right"></i>
+                                任务管理
+                            </a>
+                        </li>
+                        <!--<li ng-class="{active: childTabs[2][1], open: childTabs[2][1]}">-->
+                        <!--<a href="#/jobIncomplete">-->
+                        <!--<i class="icon-double-angle-right"></i>-->
+                        <!--未生效任务管理-->
+                        <!--</a>-->
+                        <!--</li>-->
+                        <li id="subTabs21">
+                            <a href="#/calculateJobAdd">
+                                <i class="icon-double-angle-right"></i>
+                                任务配置
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="tabState3">
+                    <a href="#" class="dropdown-toggle" id="tab3">
+                        <i class="icon-legal"></i>
+                        <span class="menu-text">其他工具</span>
+                        <b class="arrow icon-angle-down"></b>
+                    </a>
+                    <ul class="submenu">
+                        <li id="subTabs30">
+                            <a href="#/createTable">
+                                <i class="icon-double-angle-right"></i>
+                                表结构同步
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="http://dev.data.dp/dqc" target="_BLANK">
+                        <i class="icon-bell"></i>
+                        <span class="menu-text"> 数据质量 </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://dev.data.dp/monitor" target="_BLANK">
+                        <i class="icon-eye-open"></i>
+                        <span class="menu-text"> SLA监控 </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://mdm.data.dp/" target="_BLANK">
+                        <i class="icon-globe"></i>
+                        <span class="menu-text"> 主数据 </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://dev.data.dp/galaxy-manual/index.html"
+                       target="_BLANK">
+                        <i class="icon-question"></i>
+                        <span class="menu-text"> 使用帮助 </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#/reply" target="_self">
+                        <i class="icon-comments"></i>
+                        <span class="menu-text"> 意见反馈 </span>
+                    </a>
+                </li>
+            </ul>
+
+            <!--<li>-->
+            <!--<a href="#/userGuide" class="dropdown-toggle">-->
+            <!--<i class="icon-lightbulb"></i>-->
+            <!--<span class="menu-text"> 使用帮助 </span>-->
+            <!--</a>-->
+            <!--</li>-->
+
+            <!-- /.nav-list -->
+            <div class="sidebar-collapse" id="sidebar-collapse">
+                <i class="icon-double-angle-left" data-icon1="icon-double-angle-left"
+                   data-icon2="icon-double-angle-right"></i>
+            </div>
+            <script type="text/javascript">
+                //ace.settings.sidebar_collapsed(false)
+                try {
+                    ace.settings.check('sidebar', 'collapsed')
+                } catch (e) {
+                }
+            </script>
+
+        </div>
+
+        <div class="main-content">
+            <!--<div class="breadcrumbs" id="breadcrumbs">-->
+            <!--<script type="text/javascript">-->
+            <!--try {-->
+            <!--ace.settings.check('breadcrumbs', 'fixed')-->
+            <!--} catch (e) {-->
+            <!--}-->
+            <!--</script>-->
+            <!--</div>-->
+
+
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div ng-view>
+
+
+                        </div>
+                        <!-- PAGE CONTENT ENDS -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.page-content -->
+        </div>
+        <!-- /.main-content -->
+    </div>
+    <!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div>
+<!-- /.main-container -->
+
+<!-- basic scripts -->
+
+
+<script type="text/javascript">
+    if ("ontouchend" in document) document.write("<script src='/galaxy_app/lib/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+</script>
+<script src="/galaxy_app/lib/ace/js/bootstrap.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/typeahead-bs2.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.dataTables.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.dataTables.bootstrap.js"></script>
+
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+<script src="/galaxy_app/lib/ace/js/ace-elements.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/ace.min.js"></script>
+
+<script src="/galaxy_app/lib/ace/js/topology.min.1.1.js"></script>
+
+<!--Angular JS scripts-->
+<script src="/galaxy_app/lib/angular/angular.js"></script>
+<script src="/galaxy_app/lib/angular/angular-route.js"></script>
+<script src="/galaxy_app/lib/angular/angular-animate.js"></script>
+<script src="/galaxy_app/lib/angular/angular-resource.js"></script>
+
+<script src="/galaxy_app/lib/ui-bootstrap-tpls.js"></script>
+
+
+<!-- inline scripts related to this page -->
+
+<script src="/galaxy_app/lib/d3.v3.min.js"></script>
+<script src="/galaxy_app/app.js"></script>
+
+<script src="/galaxy_app/js/service/component_service.js"></script>
+<script src="/galaxy_app/js/service/utils_service.js"></script>
+<script src="/galaxy_app/js/service/ui_service.js"></script>
+<script src="/galaxy_app/js/service/common_service.js"></script>
+<script src="/galaxy_app/js/service/job_monitor_service.js"></script>
+<script src="/galaxy_app/js/service/table_service.js"></script>
+<script src="/galaxy_app/js/service/job_manage_service.js"></script>
+<script src="/galaxy_app/js/service/data_exchange_service.js"></script>
+
+<script src="/galaxy_app/js/directive/job_config_directive.js"></script>
+<script src="/galaxy_app/js/directive/cascade_tree_directive.js"></script>
+
+<script src="/galaxy_app/js/filter/dateFilter.js"></script>
+<script src="/galaxy_app/js/login.js"></script>
+
+
+<script src="/galaxy_app/js/ctrl/dialog_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/common_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/reply_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/manager_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/table/create_table.js"></script>
+
+<script src="/galaxy_app/js/ctrl/table/table_list_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_config/transfer_config_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_config/transfer_add_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_config/calculate_config_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_config/calculate_add_ctrl.js"></script>
+
+<script src="/galaxy_app/js/ctrl/job_monitor/job_monitor_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_monitor/prerun_monitor_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_monitor/job_log_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_monitor/topology_monitor_ctrl.js"></script>
+
+<script src="/galaxy_app/js/ctrl/job_manage/job_manage_ctrl.js"></script>
+<script src="/galaxy_app/js/ctrl/job_manage/job_view.js"></script>
+
+
+<script src="/galaxy_app/lib/ace/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.ui.touch-punch.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/chosen.jquery.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/fuelux/fuelux.spinner.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/date-time/bootstrap-timepicker.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/date-time/moment.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/date-time/daterangepicker.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/bootstrap-colorpicker.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.knob.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.autosize.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.inputlimiter.1.3.1.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/jquery.maskedinput.min.js"></script>
+<script src="/galaxy_app/lib/ace/js/bootstrap-tag.min.js"></script>
+<script src="/galaxy_app/lib/bindonce.min.js"></script>
+<script src="/galaxy_app/lib/jquery.noty.packaged.min.js"></script>
+<script src="/galaxy_app/lib/ngTagsInput/ng-tags-input.js"></script>
+
+
+<!--<script type="text/javascript" src="http://data.dp/pluto/resource/js/halley-global.js"></script>-->
+
+
+<!--<script>-->
+
+<!--var userVerify = new Global.UserVerify();-->
+<!--userVerify.verifyLogin(function () {-->
+<!--var cs = "tk=" + userVerify.token;-->
+<!--document.cookie = cs;-->
+<!--document.cookie = "employee_name=" + userVerify.realName;-->
+<!--document.cookie = "loginID=" + userVerify.loginID;-->
+<!--document.cookie = "employee_id=" + userVerify.employeeId;-->
+<!--document.cookie = "employee_email=" + userVerify.email;-->
+<!--document.cookie = "employee_pinyin=" + userVerify.pinyinName;-->
+
+<!--if (null == userVerify.realName || '' == userVerify.realName) {-->
+<!--userVerify.relogin();-->
+<!--} else {-->
+<!--$("#userName").text(userVerify.realName);-->
+<!--}-->
+<!--});-->
+<!--</script>-->
+
+</body>
+
+</html>

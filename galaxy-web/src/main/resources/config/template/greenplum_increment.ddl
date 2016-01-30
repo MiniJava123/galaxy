@@ -1,0 +1,4 @@
+CREATE TABLE ${tableName}(
+${columnInfo}
+) WITH (APPENDONLY=true, COMPRESSLEVEL=6, ORIENTATION=column, COMPRESSTYPE=zlib, OIDS=false) DISTRIBUTED RANDOMLY
+PARTITION BY RANGE("${partitionColumn}")(PARTITION other START ('20000101'::date) END ('20000102'::date));

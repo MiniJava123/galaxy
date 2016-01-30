@@ -1,0 +1,60 @@
+.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: orange;
+    text-align: center;
+    font-size: 25px;
+    color: white;
+    line-height: 38px;
+    margin: auto;
+    position: relative;
+    padding-top: 5px;
+}
+
+.divFloat {
+    float: left;
+}
+
+.arrowGuide {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 15px 0 15px 40px;
+    border-color: transparent transparent transparent orange;
+    margin-top:11px;
+}
+
+.lineDiv {
+    height: 12px;
+    width: 100px;
+    background-color: orange;
+}
+
+.Length90 {
+    width: 90px;
+}
+
+.marginT16 {
+    margin-top: 16px;
+}
+.marginT20 {
+    margin-top: 20px;
+}
+.marginT11 {
+    margin-top: 11px;
+}
+
+.step-pane .table-header {
+    background-color: #4D8196;
+}
+
+.tableBorder {
+    border-left: #4D8196 thin solid;
+    border-bottom: #4D8196 thin solid;
+    border-right: #4D8196 thin solid;
+}
+
+.inputBorder {
+    border: #4D8196 thin solid;
+}

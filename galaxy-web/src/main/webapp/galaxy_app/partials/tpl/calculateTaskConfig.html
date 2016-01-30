@@ -1,0 +1,40 @@
+<div class="widget-box">
+    <div class="widget-header widget-header-blue widget-header-flat">
+        <h4 class="lighter">{{guideHeader}}</h4>
+    </div>
+
+    <div class="widget-body">
+        <div class="widget-main">
+            <div id="fuelux-wizard" class="row-fluid">
+                <ul class="wizard-steps">
+                    <li class="{{isActive($index)}}" ng-repeat="step in guideSteps">
+                        <span class="step">{{step.ID}}</span>
+                        <span class="title">{{step.Text}}</span>
+                    </li>
+                </ul>
+            </div>
+            <!--<hr>-->
+            <div class="step-content row-fluid position-relative" id="step-container">
+                <div ng-transclude></div>
+            </div>
+            <!--<hr>-->
+            <div class="row-fluid wizard-actions">
+                <button class="btn btn-info btn-prev" ng-show="isPreShow()"
+                        ng-click="showPre()">
+                    <i class="icon-arrow-left"></i>
+                    调度配置
+                </button>
+                <button class="btn btn-info btn-prev" ng-click="save()" ng-disabled="saveDisabled()">
+                    保存
+                </button>
+                <button class="btn btn-success btn-next" ng-show="isNextShow()"
+                        ng-click="showNext()">
+                    目标表配置
+                    <i class="icon-arrow-right icon-on-right"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /widget-main -->
+    </div>
+    <!-- /widget-body -->
+</div>

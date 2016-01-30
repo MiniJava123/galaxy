@@ -1,0 +1,83 @@
+.topology-container {
+    box-shadow: #CCC 0px 0px 1px 1px inset;
+    height: 680px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.topology-container > svg{
+    height: 680px;
+}
+
+#info-dialog {
+    border: 1px;
+    box-shadow: 5px 5px 7px #999;
+    border-top: 1px solid #CCC;
+    position: absolute;
+    z-index: 20;
+    background-color: #fff;
+    margin: 0px 0 0 0px;
+    display: block;
+    top: 70px;
+    left: 120px;
+    padding: 0 0 0 0;
+"
+}
+
+#info-dialog > .task-info {
+    padding: 0 0 0 0;
+}
+
+#info-dialog > .task-info > table {
+    float: left;
+    word-break: break-all;
+    word-wrap: break-all;
+    table-layout: fixed;
+    margin: 0 0 0 0;
+}
+
+#info-dialog > .task-info > div {
+    float: left;
+}
+
+#info-dialog > div {
+    float: left;
+}
+
+#info-dialog .dialog-boot {
+    border-top: 1px solid #DDD;
+    background-color: whiteSmoke;
+    text-align: center;
+    padding: 15px 0 15px 0;
+}
+
+#info-dialog .task-button .btn {
+    height: 30px;
+    margin: 5px 0 0 10px;
+    padding: 0 0 0 0;
+    font-size: 11px;
+}
+
+#info-dialog .accordion-panel {
+    padding: 0 0 0 0;
+}
+
+#info-dialog .accordion-detail {
+    margin: -15px 0 -15px -18px;
+    padding: 0 0 0 0;
+}
+
+/*#info-dialog .controller ul {*/
+/*list-style: none;*/
+/*padding: 28px 20px 0 20px;*/
+/*}*/
+
+/*#info-dialog .controller ul li {*/
+/*text-align: center;*/
+/*padding: 6px 0 6px 0;*/
+/*}*/
+
+/*#info-dialog .controller ul li.separator {*/
+/*border-top: 1px solid #DDD;*/
+/*padding: 0 0 6px 0;*/
+/*}*/

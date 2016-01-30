@@ -1,0 +1,193 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{msg.headerText}}</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row bottom10">
+        <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+    </div>
+    <div class="row bottom10" ng-switch="datePickerStyle">
+        <div class="row" ng-show="datePickerStyle == 'H'">
+            <div class="row bottom10">
+                <div class="row marginL10" >
+                    <label class=" col-xs-12 col-sm-3 control-label textRight marginT5">任务开始时间</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker1" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="time.startDate">
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="input-group bootstrap-timepicker">
+                            <input id="timepicker1" type="text" class="form-control" ng-model="time.startTime">
+                                            <!--<span class="input-group-addon">-->
+                                        <!--<i class="icon-time bigger-110"></i>-->
+                                    <!--</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row marginTop">
+                <div class="row marginL10" >
+                    <label class=" col-xs-12 col-sm-3 control-label textRight marginT5">任务结束时间</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker2" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="time.endDate">
+                                            <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                            </span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="input-group bootstrap-timepicker">
+                            <input id="timepicker2" type="text" class="form-control" ng-model="time.endTime">
+                                    <!--<span class="input-group-addon">-->
+                                        <!--<i class="icon-time bigger-110"></i>-->
+                                    <!--</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="datePickerStyle == 'D'">
+            <div class="row bottom10">
+                <div class="row marginL10" >
+                    <label class="col-xs-12 col-sm-3 control-label textRight marginT5">任务开始时间</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker3" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="time.startDate">
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row marginTop">
+                <div class="row marginL10" >
+                    <label class="col-xs-12 col-sm-3 control-label textRight marginT5">任务结束时间</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker4" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="time.endDate">
+                                            <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="datePickerStyle == 'W'">
+            <div class="row bottom10">
+                <div class="row marginL10" >
+                    <label class="col-xs-12 col-sm-3 control-label textRight marginT5">任务开始时间</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker5" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="time.startDate">
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row marginTop">
+                <div class="row marginL10" >
+                    <label class="col-xs-12 col-sm-3 control-label textRight marginT5">任务结束时间</label>
+                    <div class="col-xs-12 col-sm-5">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker6" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="time.endDate">
+                                            <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="datePickerStyle == 'M'">
+            <div class="row bottom10">
+                <div class="row marginL10" >
+                    <label class=" col-xs-12 col-sm-3 control-label textRight marginT5">任务开始时间</label>
+                    <div class="col-xs-12 col-sm-3">
+                            <input class="width-100" type="text" placeholder="input year:2014"
+                                    ng-model="time.startYear">
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                            <select class="width-50" ng-model="time.startMonth"
+                                    ng-options="month for month in time.months" required>
+                            </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row marginTop">
+                <div class="row marginL10" >
+                    <label class=" col-xs-12 col-sm-3 control-label textRight marginT5">任务结束时间</label>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="input-group">
+                            <input class="width-100" type="text" placeholder="input year:2014"
+                                   ng-model="time.endYear">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                            <select class="width-50" ng-model="time.endMonth"
+                                    ng-options="month for month in time.months" required>
+                            </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn {{msg.actionButtonStyle}} btn-sm" ng-click="ok()">
+        确认
+    </button>
+    <button type="button" class="btn btn-warning btn-sm"
+            ng-click="cancel()">
+        取消
+    </button>
+</div>
+
+<script type="text/javascript">
+    jQuery(function($) {
+
+        $('#date_picker1').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('#date_picker2').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('#date_picker3').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('#date_picker4').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('#date_picker5').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('#date_picker6').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+
+//        $('#timepicker1').timepicker({
+//            showSeconds: false,
+//            showMeridian: false
+//        }).next().on(ace.click_event, function(){
+//            $(this).prev().focus();
+//        });
+//
+//        $('#timepicker2').timepicker({
+//            showSeconds: false,
+//            showMeridian: false
+//        }).next().on(ace.click_event, function(){
+//            $(this).prev().focus();
+//        });
+
+    });
+</script>

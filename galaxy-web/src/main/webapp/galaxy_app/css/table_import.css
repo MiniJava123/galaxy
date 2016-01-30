@@ -1,0 +1,56 @@
+.padding-top-4 {
+    padding-top: 4px;
+}
+.padding-top-6 {
+    padding-top: 6px;
+}
+input.margin-left-5 {
+    margin-left:5%;
+}
+input.margin-left-10 {
+    margin-left:10%;
+}
+input.margin-left-12 {
+    margin-left:12%;
+}
+input.margin-left-13 {
+    margin-left:13%;
+}
+input.margin-left-14 {
+    margin-left:14%;
+}
+
+input.margin-left-18 {
+    margin-left:18%;
+}
+
+input.margin-left-20 {
+    margin-top: 3px;
+    margin-left:20%;
+}
+
+#addDependencyButton{
+    padding-top:0px;
+    padding-bottom:0px;
+    text-align:right;
+}
+
+.del {
+    text-decoration:line-through;
+}
+
+.spinner {
+    display: inline-block;
+    opacity: 0;
+    width: 0;
+
+    -webkit-transition: opacity 0.25s, width 0.25s;
+    -moz-transition: opacity 0.25s, width 0.25s;
+    -o-transition: opacity 0.25s, width 0.25s;
+    transition: opacity 0.25s, width 0.25s;
+}
+
+.has-spinner.active .spinner {
+    opacity: 1;
+    width: auto;
+}

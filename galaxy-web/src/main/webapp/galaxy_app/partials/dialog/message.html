@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h4>{{msg.headerText}}</h4>
+</div>
+<div class="modal-body">
+    <p>{{msg.bodyText}}</p>
+</div>
+<div class="modal-footer">
+    <button class="btn {{msg.actionButtonStyle}} btn-sm" ng-click="ok()">确定
+    </button>
+    <button class="btn btn-warning btn-sm" ng-click="cancel()" ng-show="msg.showCancel">取消
+    </button>
+</div>

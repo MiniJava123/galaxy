@@ -1,0 +1,131 @@
+<div class="modal-header" style="padding-top: 8px; padding-bottom: 8px">
+    <h4 class="modal-title">{{msg.headerText}}</h4>
+</div>
+
+<div class="modal-body" style="padding-bottom: 8px;padding-top:8px">
+    <div class="row">
+        <alert style="margin-bottom: 2px" ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}
+        </alert>
+    </div>
+
+    <div>
+        <div class="row text-center" ng-show="isLoading">
+            <div id="loading" class="loading " style="color: #000000;width: auto;margin-top: -10px;">
+                载入中
+            </div>
+        </div>
+
+        <div class="row" ng-show="!isLoading">
+            <div class="col-sm-3" id="statusFlag" style="padding-left: 0px;padding-right: 0px">
+                <div class="row" style="margin-bottom: 15px;margin-top: 15px">
+                    <div class="col-sm-4 textRight">
+                        <label>开始时间:</label>
+                    </div>
+                    <div class="col-sm-7" style="padding-left: 0px;padding-right: 0px">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker_cas1" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="cascadePreRunData.startDate">
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 15px">
+
+                    <div class="col-sm-4 textRight">
+                        <label>结束时间:</label>
+                    </div>
+                    <div class="col-sm-7" style="padding-left: 0px;padding-right: 0px">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker_cas2" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="cascadePreRunData.endDate">
+                                            <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 15px">
+
+                    <div class="col-sm-4  textRight">
+                        <label>任务过滤:</label>
+                    </div>
+                    <tags-input class="col-sm-7" style="padding-left: 0px;padding-right: 0px"
+                                ng-model="filterTags" placeholder='请输入需要过滤的字符'></tags-input>
+                </div>
+                <!--<div class="col-sm-2">-->
+                <!--</div>-->
+
+                <!--<div class="col-sm-8" style="margin-bottom: 15px">-->
+                <!--<button class="btn btn-danger  filterBtn width-100" ng-click="cancelFilter()">-->
+                <!--<strong>清空</strong>-->
+                <!--</button>-->
+                <!--</div>-->
+
+                <span class="tag col-sm-12"
+                      style="text-align:center;margin-bottom: 15px;padding-left: 0px;padding-right: 0px">
+                    Tip: 共删除任务<span class="badge badge-info">{{deleteNumber}}</span>个
+                </span>
+                <span class="tag col-sm-12"
+                      style="text-align:center;background-color: #FFCC99;margin-bottom: 15px;padding-left: 0px;padding-right: 0px">可以展开的节点</span>
+                <span class="tag col-sm-12"
+                      style="text-align:center;background-color: #3182bd;margin-bottom: 15px;padding-left: 0px;padding-right: 0px">可以收缩的节点</span>
+                <span class="tag col-sm-12"
+                      style="text-align:center;background-color: #FFFFFF;border: 2px solid #3182bd;margin-bottom: 15px;padding-left: 0px;padding-right: 0px">叶子节点</span>
+                <span class="tag col-sm-12" class="tag running"
+                      style="text-align:center;background-color: #FFFF33;margin-bottom: 15px;padding-left: 0px;padding-right: 0px">删除的节点</span>
+            </div>
+
+            <div class="container col-sm-9" style="height: 500px;overflow: auto">
+                <div id="conSvg">
+                    <cascade-tree
+                            filter-tags="filterTags"
+                            tree-data="treeData"
+                            svg-width="1500"
+                            bar-height="20"
+                            bar-width="500"
+                            mt-duration="400"
+                            div-id="conSvg"
+                            delete-number="deleteNumber"
+                            >
+                    </cascade-tree>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer" style="padding-bottom: 8px;padding-top:8px">
+    <button type="button" class="btn {{msg.actionButtonStyle}} btn-sm" ng-click="ok()">
+        确认
+    </button>
+    <button type="button" class="btn btn-warning btn-sm"
+            ng-click="cancel()">
+        取消
+    </button>
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('#date_picker_cas1').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+        $('#date_picker_cas2').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+//        $('#timepicker1').timepicker({
+//            minuteStep: 1,
+//            showSeconds: true,
+//            showMeridian: false
+//        }).next().on(ace.click_event, function(){
+//            $(this).prev().focus();
+//        });
+//
+//        $('#timepicker2').timepicker({
+//            minuteStep: 1,
+//            showSeconds: true,
+//            showMeridian: false
+//        }).next().on(ace.click_event, function(){
+//            $(this).prev().focus();
+//        });
+    });
+</script>

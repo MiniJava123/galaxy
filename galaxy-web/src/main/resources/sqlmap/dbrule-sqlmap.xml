@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="dbrule">
+	<typeAlias type="com.dianping.data.warehouse.core.model.DBRule" alias="rule" />
+
+    <resultMap id="rule" class="rule" >
+        <result property="dbName" column="database_name" />
+        <result property="regex" column="regex" />
+    </resultMap>
+
+	<statement id="getRuleByDB" resultClass="java.lang.String" parameterClass="java.lang.String">
+        select regex from etl_database_rule where database_name = #databaseName#
+  	</statement>
+
+
+</sqlMap>

@@ -1,0 +1,318 @@
+<div class="col-xs-12" ng-controller="PreRunMonitorCtrl">
+<div class="col-xs-12">
+    <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+</div>
+<div class="col-xs-12" style="margin-left: 25px">
+    <div class="col-xs-12" style="margin-bottom: 10px">
+        <form class="form-vertical" name="tableListQueryForm" ng-keypress="enterPress($event)">
+            <div class="row">
+                <label class="control-label textRight inputFloat">开始时间:</label>
+
+                <div class="col-sm-2 marginR30">
+                    <div class="input-group">
+                        <input class="form-control date-picker" id="date_picker1" type="text"
+                               data-date-format="yyyy-mm-dd" ng-model="startDate">
+                                            <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                            </span>
+                    </div>
+                </div>
+                <label class="control-label textRight inputFloat">提交人:</label>
+
+                <div class="col-sm-2 marginR30">
+
+                        <span class="block input-icon input-icon-right">
+                            <!--<select name="sourceData" class="width-100" ng-model="search.taskCommitter"-->
+                                    <!--ng-options="developer.ID as developer.Text for developer in developers" required>-->
+                            <!--</select>-->
+                            <input type="text" ng-model="taskCommitter"
+                                   placeholder="不限"
+                                   typeahead=" developer as developer.Text for developer in developers | filter:$viewValue"
+                                   class="width-100">
+                        </span>
+                </div>
+                <label class="control-label textRight inputFloat">任务名/ID:</label>
+
+                <div class="col-sm-2 marginR30">
+                    <div class="input-group">
+                        <input class="form-control" type="text" ng-model="taskNameOrId">
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <button class="btn btn-primary btn-sm col-sm-1" type="button" ng-disabled="isLoading"
+                        ng-click="submitSearch()"><i
+                        class="icon-search"></i>
+                    查询
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col sm-10"></div>
+</div>
+
+<div class="col-xs-12 text-center" ng-show="isLoading">
+    <div id="loading" class="loading " style="color: #000000;width: auto">Loading data...</div>
+</div>
+
+<div class="col-xs-12" ng-hide="hideTable">
+<div class="table-header">查询结果</div>
+<div class="table-responsive">
+<div class="dataTables_wrapper" role="grid">
+<div class="row ">
+    <div class="col-sm-6">
+        <div class="dataTables_length">
+            <label>
+                每页显示
+                <select ng-model="table.selectedRecordPerPage"
+                        ng-options="rpp for rpp in table.recordPerPageOptions" required></select>
+                条记录
+            </label>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="dataTables_filter">
+            <label>
+                <i class="icon-search"></i>
+                <span>过滤:</span>
+                <input type="text" ng-model="table.query"></label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <accordion close-others="true">
+        <accordion-group is-open="isopen"
+                         ng-repeat="job in table.displayedDataList.slice(table.startIndex-1, table.endIndex)"
+                >
+            <accordion-heading>
+                <i class="pull-left ng-isolate-scope bigger-110"
+                   ng-class="{'icon-minus': isopen, 'icon-plus': !isopen}"></i>
+                <span bindonce class="col-sm-1" bo-text="job.task_id"></span>
+                <span bindonce class="col-sm-4" bo-text="job.task_name"></span>
+                <!--<span bindonce class="col-sm-1" bo-text="'周期: ' + getCycleText(job.cycle)"></span>-->
+                <i class="label  bigger-110 label-success marginL10">
+                    <span bindonce bo-text="job.task_success_num"></span> successed
+                </i>
+                <i class="label  bigger-110 label-danger marginL10">
+                    <span bindonce bo-text="job.task_unSuccess_num"></span> unsuccessed
+                </i>
+            </accordion-heading>
+            <div class="col-xs-12 ">
+                <div class="row form_border_job " ng-controller="PreRunWatchCtrl">
+                    <div class="col-sm-3 ">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label textRight paddingR0">任务状态:</label>
+
+                            <div class="col-sm-8">
+                                <select style="height: 25px"
+                                        ng-model="jobInstanceTable[$parent.$parent.$index + table.startIndex - 1].showStatus"
+                                        ng-options="option.ID as option.Text for option in jobInstanceTable[$parent.$parent.$index + table.startIndex - 1].statusConditions">
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3 ">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label textRight paddingR0">其他过滤条件:</label>
+
+                            <div class="col-sm-7">
+                                <input
+                                        ng-model="jobInstanceTable[$parent.$parent.$index + table.startIndex - 1].query"
+                                        placeholder="taskID, taskName...">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3 ">
+                        <div class="dataTables_length textRight">
+                            <label>每页显示
+                                <select ng-model="jobInstanceTable[$parent.$parent.$index + table.startIndex - 1].selectedRecordPerPage"
+                                        ng-options="rpp for rpp in jobInstanceTable[$parent.$parent.$index + table.startIndex - 1].recordPerPageOptions">
+                                </select> 条记录
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover dataTable">
+                    <thead>
+                    <tr role="row">
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('instanceID')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'instanceID'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            任务实例ID
+                        </th>
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('time_id')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'time_id'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            时间批次
+                        </th>
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('start_time')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'start_time'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            启动时间
+                        </th>
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('end_time')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'end_time'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            结束时间
+                        </th>
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('schedule_cycle')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'schedule_cycle'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            周期
+                        </th>
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('status')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'status'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            状态
+                        </th>
+                        <th class="{{jobInstanceTable[$index + table.startIndex - 1].getSortingClass('task_committer')}}"
+                            ng-click="jobInstanceTable[$index + table.startIndex - 1].predicate = 'task_committer'; jobInstanceTable[$index + table.startIndex - 1].reverse=!jobInstanceTable[$index + table.startIndex - 1].reverse">
+                            提交人
+                        </th>
+                        <th>操作
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr bindonce
+                        ng-repeat="job_instance in jobInstanceTable[$index + table.startIndex - 1].displayedDataList.slice(jobInstanceTable[$index + table.startIndex - 1].startIndex-1, jobInstanceTable[$index + table.startIndex - 1].endIndex) ">
+                        <td><span bo-text="job_instance.instanceID"></span></td>
+                        <td><span bo-text="job_instance.time_id"></span></td>
+                        <td><span bo-text="job_instance.start_time"></span></td>
+                        <td><span bo-text="job_instance.end_time"></span></td>
+                        <td>
+                        <span class="label {{getExecutionCycleLabel(job_instance.schedule_cycle)}}">
+                        {{getCycleText(job_instance.schedule_cycle)}}
+                        </span>
+                        </td>
+                        <td>
+                            <span class="tag {{getStatusText(job_instance.status)}} text-center">
+                             {{getStatusText(job_instance.status)}}
+                            </span>
+                        </td>
+                        <td>
+                            {{getDevelopChineseName(job_instance.task_committer)}}
+                        <td>
+                            <button class="btn-link green" ng-click="viewLog(job_instance.log_path)"
+                                    tooltip-placement="top"
+                                    tooltip="查看日志">
+                                <i class="icon-file-text bigger-130"></i>
+                            </button>
+                            <button class="btn-link green" ng-click="reRunJob($parent.$parent.$index, $index)"
+                                    ng-show="(canReRun(job_instance.status) && (user.isAdmin || user.pinyinName == job_instance.task_committer))"
+                                    tooltip-placement="top"
+                                    tooltip="重跑">
+                                <i class="icon-play bigger-130"></i>
+                            </button>
+
+                            <button class="btn-link red" ng-click="successJob($parent.$parent.$index,$index)"
+                                    ng-show="(canSuccess(job_instance.status) && (user.isAdmin || user.pinyinName == job_instance.task_committer))"
+                                    tooltip-placement="top"
+                                    tooltip="置为成功">
+                                <i class="icon-ok bigger-130"></i>
+                            </button>
+
+                            <button class="btn-link yellow" ng-click="suspendJob($parent.$parent.$index,$index)"
+                                    ng-show="(canSuspend(job_instance.status) && (user.isAdmin || user.pinyinName == job_instance.task_committer))"
+                                    tooltip-placement="top"
+                                    tooltip="挂起任务">
+                                <i class="icon-pause bigger-130"></i>
+                            </button>
+
+                            <button class="btn-link yellow" ng-click="stateHelp($parent.$parent.$index,$index)"
+                                    tooltip-placement="top"
+                                    tooltip="状态分析">
+                                <i class="icon-question bigger-130"></i>
+                            </button>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row form_border_job">
+                    <div class="col-sm-6">
+                        <div class="dataTables_info">展示第{{jobInstanceTable[$index + table.startIndex -
+                            1].startIndex}}条记录
+                            至第{{jobInstanceTable[$index+ table.startIndex - 1].endIndex}}条记录（总计{{jobInstanceTable[$index
+                            + table.startIndex - 1].total}}条记录）
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_paginate paging_bootstrap">
+                            <ul class="pagination">
+                                <li class="{{jobInstanceTable[$index + table.startIndex - 1].getDisableLabelforPrevious()}}">
+                                    <a href=""
+                                       ng-click="jobInstanceTable[$index + table.startIndex - 1].gotoFirstPage()"><i
+                                            class="icon-double-angle-left"></i></a></li>
+                                <li class="{{jobInstanceTable[$index + table.startIndex - 1].getDisableLabelforPrevious()}}">
+                                    <a href=""
+                                       ng-click="jobInstanceTable[$index + table.startIndex - 1].previousPage()"><i
+                                            class="icon-angle-left"></i></a></li>
+                                <li ng-repeat="num in jobInstanceTable[$index + table.startIndex - 1].getCurrentPageNumDisplay()"
+                                    class="{{jobInstanceTable[$parent.$index + table.startIndex - 1].getActiveLabel(num)}}">
+                                    <a href=""
+                                       ng-click="jobInstanceTable[$parent.$index + table.startIndex - 1].changePage(num)">{{num}}</a>
+                                </li>
+                                <li class="{{jobInstanceTable[$index + table.startIndex - 1].getDisableLabelforNext()}}">
+                                    <a href=""
+                                       ng-click="jobInstanceTable[$index + table.startIndex - 1].nextPage()"><i
+                                            class="icon-angle-right"></i></a></li>
+                                <li class="{{jobInstanceTable[$index + table.startIndex - 1].getDisableLabelforNext()}}">
+                                    <a href=""
+                                       ng-click="jobInstanceTable[$index + table.startIndex - 1].gotoLastPage()"><i
+                                            class="icon-double-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </accordion-group>
+    </accordion>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="dataTables_info">
+            展示第{{table.startIndex}}条记录至第{{table.endIndex}}条记录（总计{{table.total}}条记录）
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="dataTables_paginate paging_bootstrap">
+            <ul class="pagination">
+                <li class="{{table.getDisableLabelforPrevious()}}">
+                    <a href="" ng-click="table.gotoFirstPage()">
+                        <i class="icon-double-angle-left"></i>
+                    </a>
+                </li>
+                <li class="{{table.getDisableLabelforPrevious()}}">
+                    <a href="" ng-click="table.previousPage()">
+                        <i class="icon-angle-left"></i>
+                    </a>
+                </li>
+                <li ng-repeat="num in table.getCurrentPageNumDisplay()"
+                    class="{{table.getActiveLabel(num)}}">
+                    <a href="" ng-click="table.changePage(num)">{{num}}</a>
+                </li>
+                <li class="{{table.getDisableLabelforNext()}}">
+                    <a href="" ng-click="table.nextPage()">
+                        <i class="icon-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{table.getDisableLabelforNext()}}">
+                    <a href="" ng-click="table.gotoLastPage()">
+                        <i class="icon-double-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- col-sm-6 --> </div>
+<!-- row --> </div>
+<!-- dataTables_wrapper --> </div>
+<!-- table-responsive -->
+</div>
+
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+
+        $('#date_picker1').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+
+    });
+</script>

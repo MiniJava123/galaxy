@@ -1,0 +1,290 @@
+.taskQueryDialog .modal-dialog {
+    width: 60%;
+    min-width: 800px;
+}
+
+.cascadeRecallTasksDialog .modal-dialog {
+    width: 80%;
+    min-width: 100px;
+    height: 80%;
+    max-height: 700px;
+}
+
+.cascadePreRunTasksDialog .modal-dialog {
+    width: 80%;
+    min-width: 100px;
+    height: 80%;
+    max-height: 700px;
+}
+
+.dependencyDiv {
+    border: #AADDFF dashed thin;
+    width: 95%;
+    min-width: 500px;
+}
+
+.height80 {
+    height: 80px;
+    padding-top: 23px;
+}
+
+.textRight {
+    text-align: right;
+}
+
+.tooltip {
+    width: 320px;
+}
+
+.jobTooltip .tooltip {
+    width: auto;
+}
+
+.black {
+    color: #000000;
+}
+
+.yellow {
+    color: #696969;
+}
+
+.width95 {
+    width: 95%;
+}
+
+.padding-left0 {
+    padding-left: 0px;
+}
+
+.div_text_right {
+    text-align: right;
+}
+
+.form_border {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form_border_job {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+}
+
+.bottom10 {
+    margin-bottom: 10px;
+}
+
+.dialogLabel {
+    float: left;
+    padding-top: 4px;
+    margin-left: 5%
+}
+
+.padding0 {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.bottom30 {
+    margin-bottom: 30px;
+}
+
+.accordion-toggle {
+    border-color: #ccc;
+    background-color: #f5f5f5;
+}
+
+.inputFloat {
+    float: left;
+    padding-top: 4px;
+    margin-right: 5px;
+}
+
+.marginR5 {
+    margin-right: 5px;
+}
+
+.marginR30 {
+    margin-right: 30px;
+}
+
+.marginR60 {
+    margin-right: 60px;
+}
+
+.marginL5 {
+    margin-left: 5px;
+}
+
+.marginT5 {
+    margin-top: 5px;
+}
+
+.marginL0 {
+    margin-left: 0px;
+}
+
+.marginR0 {
+    margin-right: 0px;
+}
+
+.paddingT5 {
+    padding-top: 5px;
+}
+
+.marginL10 {
+    margin-left: 10px;
+}
+
+.marginL18 {
+    margin-left: 18px;
+}
+
+.width10 {
+    width: 10%;
+}
+
+.statusFont {
+    font-size: 16px;
+}
+
+.paddingR0 {
+    padding-right: 0px;
+}
+
+.disableBtn {
+    color: #808080;
+}
+
+#JobList .tooltip {
+    width: auto;
+}
+
+#jobManagerTable .tooltip {
+    width: auto;
+}
+
+#statusFlag .tag {
+    width: 100%;
+}
+
+.inputHeight25 {
+    height: 25px;
+}
+
+.inputHeight28 {
+    height: 28px;
+}
+
+#filterButton1 .btn {
+    border: 3px solid #ffffff;
+    width: 50px;
+    height: 25px;
+}
+
+#filterButton2 .btn {
+    border: 3px solid #ffffff;
+    width: 80px;
+    height: 25px;
+}
+
+.filterBtn {
+    border-radius: 0;
+    padding: 0 0;
+}
+
+.textColorWhite {
+    color: #a52a2a;
+}
+
+.black {
+    color: #000000;
+}
+
+.tag {
+    width: 70%;
+    height: 23px;
+    border: solid 1px white;
+    border-radius: 0px;
+    display: block;
+}
+
+.tag.success {
+    background-color: #458B00;
+}
+
+.tag.fail {
+    background-color: #FF3030;
+}
+
+.tag.init {
+    background-color: #E3E3E3;
+}
+
+.tag.running {
+    background-color: #63B8FF;
+}
+
+.tag.suspend {
+    background-color: #878787;
+}
+
+.tag.init-error {
+    background-color: #EEEE00;
+}
+
+.tag.wait {
+    background-color: #EEAD0E;
+}
+
+.tag.ready {
+    background-color: #FFFCC7;
+}
+
+.tag.timeout {
+    background-color: #0000FF;
+}
+
+.caret {
+    padding-top: 3px;
+    border-top: 4px solid #ffffff;
+}
+
+.widget-main .tab-content {
+    border: 1px solid #c5d0dc;
+    padding: 16px 12px;
+    position: relative;
+    z-index: 11;
+}
+
+.guideDiv {
+    width: 1300px;
+    height: 600px;
+    margin: 0px auto;
+}
+
+#listMonitorForm label {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#listMonitorForm .col-xs-9 .col-sm-4 {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.sidebar {
+    width: 160px;
+}
+
+.sidebar:before {
+    width: 160px;
+}
+
+.main-content {
+    margin-left: 160px;
+}
+
+

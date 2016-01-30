@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="exceptionalert">
+    <typeAlias type="com.dianping.data.warehouse.domain.model.ExceptionAlertDO" alias="exceptionAlertDO"/>
+
+    <resultMap id="exceptionAlertDO" class="exceptionAlertDO">
+        <result property="id" column="id"/>
+        <result property="product" column="product"/>
+        <result property="description" column="description"/>
+        <result property="oncall" column="oncall"/>
+    </resultMap>
+
+    <statement id="getExceptionAlertsByProduct" resultMap="exceptionAlertDO" parameterClass="java.lang.String">
+        select id,product,description,oncall
+        from etl_exception_cfg
+        where
+        product = #product#
+    </statement>
+
+</sqlMap>
+

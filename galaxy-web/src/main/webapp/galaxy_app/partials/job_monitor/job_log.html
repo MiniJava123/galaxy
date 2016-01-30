@@ -1,0 +1,15 @@
+<div ng-controller="JobLogCtrl" class="page-content">
+    <h3 class="header smaller lighter blue">{{logTitle}}</h3>
+
+    <div class="row" ng-show="isError">
+        <span style="font-size: 18px" ng-bind-html="logContent"></span>
+    </div>
+    <div class="row" ng-show="!isError">
+        <p>
+            <span style="font-size: 18px" ng-bind-html="logContent"></span>
+        </p>
+        <!--<pre>-->
+            <!--{{logContent}}-->
+        <!--</pre>-->
+    </div>
+</div>

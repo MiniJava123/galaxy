@@ -1,0 +1,16 @@
+<div class="page-content" ng-controller="ManagerCtrl">
+    <div class="page-header">
+        <h1>
+            管理员页面
+        </h1>
+    </div>
+
+    <div class="col-xs-12">
+        <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+    </div>
+
+    <div class="col-xs-12">
+        <button class="btn btn-primary pull-right" ng-click="updateMonitor()">刷新值班人员</button>
+    </div>
+</div>
+

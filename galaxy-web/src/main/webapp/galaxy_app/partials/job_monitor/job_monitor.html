@@ -1,0 +1,610 @@
+<tabset id="manageTabs">
+
+<tab heading="任务监控 列表展示" id="listTab">
+<div ng-controller="JobMonitorCtrl" class="page-content">
+<div class="row">
+<div class="col-xs-12">
+    <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}
+    </alert>
+</div>
+<div class="col-xs-12">
+    <div class="row" style="padding-bottom: 12px">
+        <form class="form-vertical" id="listMonitorForm" ng-keypress="enterPress($event)">
+            <div class="row">
+                <div class="col-sm-11">
+                    <label class="col-sm-1 control-label textRight">开始时间:</label>
+
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker1" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="startDate" required>
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                        </div>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight">任务状态:</label>
+
+                    <div class="col-sm-2">
+				        <span class="block input-icon input-icon-right">
+					        <select name="executionCycle" class="width-100" ng-model="jobStatus"
+                                    ng-options="status.ID as status.Text for status in executionStatusOptions"></select>
+				        </span>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight">周期:</label>
+
+                    <div class="col-sm-2">
+						<span class="block input-icon input-icon-right">
+							<select name="executionCycle" class="width-80" ng-model="execCycle"
+                                    ng-options="k as v for (k,v) in executionCycleOptions" required></select>
+						</span>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight">开发者:</label>
+
+                    <div class="col-sm-2">
+                        <span class="block input-icon input-icon-right">
+					        <input type="text" ng-model="developer" placeholder="不限"
+                                   typeahead=" developer as developer.Text for developer in developers | filter:$viewValue"
+                                   class="width-80">
+			            </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-11">
+                    <label class="col-sm-1 control-label textRight">结束时间:</label>
+
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input class="form-control date-picker" id="date_picker2" type="text"
+                                   data-date-format="yyyy-mm-dd" ng-model="endDate" required>
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                        </div>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight">优先级别:</label>
+
+                    <div class="col-sm-2">
+				        <span class="block input-icon input-icon-right">
+					        <select name="executionPriority" class="width-100" ng-model="executionPriority"
+                                    ng-options="prioLvl.ID as prioLvl.Text for prioLvl in executionPriorityOptions">
+                            </select>
+				        </span>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight">显示依赖:</label>
+
+                    <div class="col-sm-2">
+				        <span class="block input-icon input-icon-right">
+					        <select name="dependencyIsShow" class="width-80" ng-model="dependencyIsShow"
+                                    ng-disabled="true"
+                                    ng-options="sec.ID as sec.Text for sec in dependencyIsShowOptions">
+                            </select>
+
+                            <span class="help-button" tooltip-placement="top"
+                                  tooltip="列表展示下，不显示依赖">?
+                            </span>
+				        </span>
+                    </div>
+
+                    <label class="col-sm-1 control-label textRight">任务名/ID:</label>
+
+                    <div class="col-sm-2">
+				        <span class="block input-icon input-icon-right">
+					        <input type="text" class="width-80" ng-model="taskNameOrId">
+                            <span class="help-button" tooltip-placement="top"
+                                  tooltip="如果查询多个任务ID请以,分隔">?
+                            </span>
+				        </span>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-1">
+                    <button class="btn btn-primary btn-sm col-sm-12" type="button" ng-click="submitSearch()"
+                            ng-disabled="isLoading">
+                        <i class="icon-search"></i>查询
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="col-xs-12 text-center" ng-show="isLoading">
+    <div id="loading" class="loading " style="color: #000000;width: auto">载入中</div>
+</div>
+
+<div class="col-xs-12" ng-hide="hideTable">
+    <div class="row" id="JobList">
+        <div class="table-header">查询结果</div>
+        <div class="table-responsive">
+            <div class="dataTables_wrapper jobTooltip" role="grid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dataTables_length">
+                            <label>每页显示
+                                <select ng-model="table.selectedRecordPerPage"
+                                        ng-options="rpp for rpp in table.recordPerPageOptions" required>
+                                </select> 条记录
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="dataTables_filter">
+                            <label><i class="icon-search"></i>
+                                过滤: <input type="text" ng-model="table.query"></label>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover dataTable">
+                    <thead>
+                    <tr role="row">
+                        <th class="center">
+                            <label>
+                                <input type="checkbox" class="ace" ng-model="isSelectAllJob">
+                                <span class="lbl"></span>
+                            </label>
+                        </th>
+                        <th class="{{table.getSortingClass('taskStatusId')}}"
+                            ng-click="table.predicate = 'taskStatusId'; table.reverse=!table.reverse">任务实例ID
+                        </th>
+                        <th class="{{table.getSortingClass('taskId')}}"
+                            ng-click="table.predicate = 'taskId'; table.reverse=!table.reverse">任务ID
+                        </th>
+                        <th class="{{table.getSortingClass('taskName')}} width-25"
+                            ng-click="table.predicate = 'taskName'; table.reverse=!table.reverse">任务名
+                        </th>
+                        <th class="{{table.getSortingClass('cycle')}}"
+                            ng-click="table.predicate = 'cycle'; table.reverse=!table.reverse">执行周期
+                        </th>
+                        <th class="{{table.getSortingClass('owner')}}"
+                            ng-click="table.predicate = 'owner'; table.reverse=!table.reverse">开发者
+                        </th>
+                        <th class="{{table.getSortingClass('status')}} width10"
+                            ng-click="table.predicate = 'status'; table.reverse=!table.reverse">状态
+                        </th>
+                        <th class="{{table.getSortingClass('startTime')}}"
+                            ng-click="table.predicate = 'startTime'; table.reverse=!table.reverse">开始时间
+                        </th>
+                        <th class="{{table.getSortingClass('endTime')}}"
+                            ng-click="table.predicate = 'endTime'; table.reverse=!table.reverse">结束时间
+                        </th>
+                        <th class="width-20">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="jobInstance in table.displayedDataList.slice(table.startIndex-1, table.endIndex)">
+                        <td class="center"><label><input type="checkbox" class="ace"
+                                                         ng-model="jobInstance.selected"><span
+                                class="lbl"></span></label>
+                        </td>
+                        <td>{{jobInstance.taskStatusId}}</td>
+                        <td>{{jobInstance.taskId}}</td>
+                        <td style="word-break:break-all; word-wrap:break-word;">{{jobInstance.taskName}}</td>
+                        <td>
+                            <span class="label {{getExecutionCycleLabel(jobInstance.cycle)}}">{{getCycleText(jobInstance.cycle)}}</span>
+                        </td>
+                        <td>{{getDevelopChineseName(jobInstance.owner)}}</td>
+                        <td>
+                            <span class="tag statusFont text-center {{getStatusText(jobInstance.status)}}">
+                                                {{getStatusText(jobInstance.status)}}</span>
+                        </td>
+                        <td>{{jobInstance.startTime|date:"yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td>{{jobInstance.endTime|date:"yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td>
+                            <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                <a class="blue"
+                                   href="#/jobMonitor/viewLog/{{jobInstance.logPath|StringReplace:'\\/':'+'}}"
+                                   target="_blank" tooltip-placement="top" tooltip="查看日志">
+                                    <i class="icon-file-text bigger-130"></i>
+                                </a>
+                                <button class="btn-link green" ng-click="reRunJob($index)"
+                                        ng-show="(canReRun(jobInstance.status) && (user.isAdmin || user.pinyinName == jobInstance.owner))"
+                                        tooltip-placement="top"
+                                        tooltip="重跑">
+                                    <i class="icon-play bigger-130"></i>
+                                </button>
+                                <button class="btn-link green" ng-click="reRunJobCascaded($index)"
+                                        ng-show="(canReRun(jobInstance.status) && user.isAdmin)"
+                                        tooltip-placement="top" tooltip="级联重跑">
+                                    <i class="icon-exchange bigger-130"></i>
+                                </button>
+                                <button class="btn-link red" ng-click="successJob($index)"
+                                        ng-show="(canSuccess(jobInstance.status) && (user.isAdmin || user.pinyinName == jobInstance.owner))"
+                                        tooltip-placement="top"
+                                        tooltip="置为成功">
+                                    <i class="icon-ok bigger-130"></i>
+                                </button>
+
+                                <button class="btn-link yellow" ng-click="suspendJob($index)"
+                                        ng-show="(canSuspend(jobInstance.status) && (user.isAdmin || user.pinyinName == jobInstance.owner))"
+                                        tooltip-placement="top"
+                                        tooltip="挂起任务">
+                                    <i class="icon-pause bigger-130"></i>
+                                </button>
+
+                                <button class="btn-link yellow" ng-click="topologyShow($index)"
+                                        tooltip-placement="top"
+                                        tooltip="查看拓扑图">
+                                    <i class="icon-bar-chart bigger-130"></i>
+                                </button>
+
+                                <button class="btn-link yellow" ng-click="jobManage($index)"
+                                        tooltip-placement="top"
+                                        tooltip="任务管理">
+                                    <i class="icon-cog bigger-130"></i>
+                                </button>
+
+                                <button class="btn-link yellow" ng-click="stateHelp($index)" tooltip-placement="top"
+                                        tooltip="状态分析">
+                                    <i class="icon-question bigger-130"></i>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="dataTables_info">
+                            展示第{{table.startIndex}}条记录至第{{table.endIndex}}条记录（总计{{table.total}}条记录）
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn-link green" ng-click="reRunJobsBySelected()" tooltip-placement="top"
+                                tooltip="批量重跑">
+                            <i class="icon-play bigger-130 "></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn-link red" ng-click="successJobsBySelected()" tooltip-placement="top"
+                                tooltip="批量置为成功">
+                            <i class="icon-ok bigger-130 "></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn-link yellow" ng-click="suspendJobsBySelected()" tooltip-placement="top"
+                                tooltip="批量置为挂起">
+                            <i class="icon-pause bigger-130 "></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="dataTables_paginate paging_bootstrap">
+                            <ul class="pagination">
+                                <li class="{{table.getDisableLabelforPrevious()}}"><a href=""
+                                                                                      ng-click="table.gotoFirstPage()"><i
+                                        class="icon-double-angle-left"></i></a></li>
+                                <li class="{{table.getDisableLabelforPrevious()}}"><a href=""
+                                                                                      ng-click="table.previousPage()"><i
+                                        class="icon-angle-left"></i></a></li>
+                                <li ng-repeat="num in table.getCurrentPageNumDisplay()"
+                                    class="{{table.getActiveLabel(num)}}">
+                                    <a href="" ng-click="table.changePage(num)">{{num}}</a>
+                                </li>
+                                <li class="{{table.getDisableLabelforNext()}}"><a href="" ng-click="table.nextPage()"><i
+                                        class="icon-angle-right"></i></a></li>
+                                <li class="{{table.getDisableLabelforNext()}}"><a href=""
+                                                                                  ng-click="table.gotoLastPage()"><i
+                                        class="icon-double-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</tab>
+<tab heading="任务监控 拓扑图展示" id="topologyTab">
+
+<div ng-controller="TopologyMonitorCtrl" class="page-content">
+<div class="row">
+<div class="col-xs-12">
+    <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+</div>
+
+<div class="col-xs-12">
+    <form class="form-vertical" name="queryForm" novalidate
+          ng-keypress="enterPress($event)">
+        <div class="row">
+            <div class="col-sm-11">
+                <label class="col-sm-1 control-label textRight">开始时间:</label>
+
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control date-picker" id="date_picker3" type="text"
+                               data-date-format="yyyy-mm-dd" ng-model="startDate" required>
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                    </div>
+                </div>
+
+                <label class="col-sm-1 control-label textRight">任务状态:</label>
+
+                <div class="col-sm-2">
+				<span class="block input-icon input-icon-right">
+					<select name="executionStatus" class="width-100"
+                            ng-model="executionStatus"
+                            ng-options="status.ID as status.Text for status in executionStatusOptions" required>
+                    </select>
+				</span>
+                </div>
+
+                <label class="col-sm-1 control-label textRight">执行周期:</label>
+
+                <div class="col-sm-2">
+						<span class="block input-icon input-icon-right">
+							<select name="executionCycle" class="width-80"
+                                    ng-model="executionCycle"
+                                    ng-options="k as v for (k,v) in executionCycleOptions"
+                                    required></select>
+						</span>
+                </div>
+
+                <label class="col-sm-1 control-label textRight">开发者:</label>
+
+                <div class="col-sm-2">
+                <span class="block input-icon input-icon-right">
+					<input type="text" ng-model="developer"
+                           placeholder="不限"
+                           typeahead="developer as developer.Text for developer in developers | filter:$viewValue"
+                           class="width-80">
+			    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-11">
+                <label class="col-sm-1 control-label textRight">结束时间:</label>
+
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control date-picker" id="date_picker4" type="text"
+                               data-date-format="yyyy-mm-dd" ng-model="endDate" required>
+                                        <span class="input-group-addon"> <i class="icon-calendar bigger-110"></i>
+                                        </span>
+                    </div>
+                </div>
+
+                <label class="col-sm-1 control-label textRight">优先级别:</label>
+
+                <div class="col-sm-2">
+				<span class="block input-icon input-icon-right">
+					<select name="executionPriority" class="width-100"
+                            ng-model="executionPriority"
+                            ng-options="prioLvl.ID as prioLvl.Text for prioLvl in executionPriorityOptions">
+                    </select>
+				</span>
+                </div>
+                <label class="col-sm-1 control-label textRight">显示依赖:</label>
+
+                <div class="col-sm-2">
+				<span class="block input-icon input-icon-right">
+					<select name="dependencyIsShow" class="width-80" ng-model="dependencyIsShow"
+                            ng-options="sec.ID as sec.Text for sec in dependencyIsShowOptions">
+                    </select>
+                    <span class="help-button" tooltip-placement="top"
+                          tooltip="是否显示其后置任务，如果以时间段进行查询时该选项失效">?
+                    </span>
+				</span>
+                </div>
+                <label class="col-sm-1 control-label textRight">任务名/ID:</label>
+
+                <div class="col-sm-2">
+				<span class="block input-icon input-icon-right">
+					<input type="text" class="width-80" ng-model="taskNameOrId">
+                    <span class="help-button" tooltip-placement="top"
+                          tooltip="如果查询多个任务ID请以,分隔">?
+                    </span>
+				</span>
+
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-primary btn-sm col-sm-12" type="button" ng-click="submitSearch()"
+                        ng-disabled="isLoading">
+                    <i class="icon-search"></i>查询
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="col-xs-12" style="padding-top: 10px">
+    <div class="col-sm-1" id="statusFlag">
+        <br>
+        <span class="tag success" style="text-align:center">success</span>
+        <br>
+        <span class="tag fail" style="text-align:center">failed</span>
+        <br>
+        <span class="tag init" style="text-align:center">init</span>
+        <br>
+        <span class="tag running" style="text-align:center">running</span>
+        <br>
+        <span class="tag suspend" style="text-align:center">suspend</span>
+        <br>
+        <span class="tag init-error" style="text-align:center">init-err</span>
+        <br>
+        <span class="tag wait" style="text-align:center">wait</span>
+        <br>
+        <span class="tag ready" style="text-align:center">ready</span>
+        <br>
+        <span class="tag timeout white" style="text-align:center">timeout</span>
+        <br>
+    </div>
+
+    <div class="col-xs-11 text-center" ng-show="isLoading">
+        <div id="loading1" class="loading " style="color: #000000;width: auto">载入中</div>
+    </div>
+
+    <div id="topology-container" class="topology-container col-sm-11" ng-click="hideDetail()"></div>
+
+    <div id="info-dialog" class="col-sm-4" ng-show="showTaskInfo">
+        <div class="task-info col-sm-9">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="30%">名称</th>
+                    <th width="60%">值</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>实例ID</td>
+                    <td>{{instance.taskStatusId}}</td>
+                </tr>
+                <tr>
+                    <td>运行日期</td>
+                    <td>{{instance.timeId}}</td>
+                </tr>
+                <tr>
+                    <td>任务名称</td>
+                    <td>{{instance.taskName}}</td>
+                </tr>
+                <tr>
+                    <td>优先级</td>
+                    <td>{{getPrioLvlText(instance.prioLvl)}}</td>
+                </tr>
+                <tr>
+                    <td>任务日志</td>
+                    <td>
+                        <a href="#/jobMonitor/viewLog/{{instance.logPath|StringReplace:'\\/':'+'}}"
+                           target="_BLANK">点击查看</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>状态</td>
+                    <td>{{getStatusText(instance.status)}}</td>
+                </tr>
+                <tr>
+                    <td>开发者</td>
+                    <td>{{getDevelopChineseName(instance.owner)}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="task-button col-sm-3" style="padding:0 0 0 0;">
+            <button class="btn btn-waining btn-sm col-sm-9"
+                    type="button"
+                    ng-click="instanceReRun()" ng-show="(canReRun && (user.isAdmin || user.isOwner))">置为重跑
+            </button>
+            <button class="btn btn-inverse btn-sm col-sm-9"
+                    type="button"
+                    ng-show="(canSuspend && (user.isAdmin || user.isOwner))" ng-click="instanceSuspend()">置为挂起
+            </button>
+            <button class="btn btn-success btn-sm col-sm-9"
+                    type="button"
+                    ng-show="(canSuccess && (user.isAdmin || user.isOwner))" ng-click="instanceSuccess()">置为成功
+            </button>
+            <button class="btn btn-danger btn-sm col-sm-9"
+                    type="button" ng-click="reRunJobCascaded()" ng-show="(canReRun && user.isAdmin)">级联重跑
+            </button>
+            <button class="btn btn-primary btn-sm col-sm-9"
+                    type="button"
+                    ng-click="queryDirectRelation()">直接依赖
+            </button>
+            <button class="btn btn-primary btn-sm col-sm-9"
+                    type="button"
+                    ng-click="queryAllRelation()">所有依赖
+            </button>
+            <button class="btn btn-primary btn-sm col-sm-9"
+                    type="button"
+                    ng-click="getLongestPath()">最长路径
+            </button>
+            <button class="btn btn-primary btn-sm col-sm-9"
+                    type="button" ng-click="lookOverTask()">运行历史
+            </button>
+            <button class="btn btn-primary btn-sm col-sm-9"
+                    type="button" ng-click="manageTask()">任务管理
+            </button>
+            <button class="btn btn-warning btn-sm col-sm-9"
+                    type="button"
+                    ng-click="instanceBatchStop()"
+                    ng-show="(canBatchStop && canSuspend && (user.isAdmin || user.isOwner))">
+                停止预跑
+            </button>
+            <button class="btn btn-success btn-sm col-sm-9"
+                    type="button"
+                    ng-click="instanceRaisePriority()" ng-show="(canRaisePriority && user.isAdmin)">快速通道
+            </button>
+        </div>
+
+        <div class="accordion-panel col-sm-12">
+            <accordion close-others="true">
+                <accordion-group is-open="isopen" style="border:0;">
+                    <accordion-heading id="accordion-header-white">
+                        <i class="pull-left ng-isolate-scope bigger-110"
+                           ng-class="{'icon-minus': isopen, 'icon-plus': !isopen}"></i>
+                        详细信息
+                    </accordion-heading>
+                    <div class="accordion-detail col-sm-10">
+                        <table class="table table-striped" style="margin:0 0 0 0">
+                            <thead>
+                            <tr>
+                                <th width="30%">名称</th>
+                                <th width="60%">值</th>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td>周期</td>
+                                <td>{{getExecutionCycleText(instance.cycle)}}</td>
+                            </tr>
+                            <tr>
+                                <td>运行次数</td>
+                                <td>{{instance.runNum}}</td>
+                            </tr>
+                            <tr>
+                                <td>重跑次数</td>
+                                <td>{{instance.recallNum}}</td>
+                            </tr>
+                            <tr>
+                                <td>起止时间</td>
+                                <td>{{instance.startTime}} ~ {{instance.endTime}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </accordion-group>
+            </accordion>
+        </div>
+    </div>
+
+
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('#date_picker1').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+        $('#date_picker2').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+
+        $('#date_picker3').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+        $('#date_picker4').datepicker({autoclose: true}).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+    });
+</script>
+
+</tab>
+
+</tabset>
+
+

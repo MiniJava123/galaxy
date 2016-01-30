@@ -1,0 +1,676 @@
+<div class="page-content" ng-controller="CalculateConfigCtrl" ng-show="hasPower">
+<calculate-config guide-steps="jobConfigSteps" guide-header="任务配置">
+<div class="step-pane {{isActive(0)}}" ng-show="isShow(0)">
+<div ng-controller="CalculateScheduleConfigCtrl" class="page-content" style="margin-bottom: 40px">
+<div class="col-xs-12" style="margin-bottom: 20px">
+    <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+</div>
+<div class="col-xs-12">
+<form class="form-vertical" name="gitConfigForm" ng-hide="showConfig">
+    <div class="col-xs-12">
+        <div class="col-xs-12 form-group padding-top-6">
+
+            <label class="col-sm-1 control-label padding0 textRight">任务Git地址</label>
+
+            <div class="col-sm-3">
+                <select name="projectName" class="width-80" ng-model="projectName"
+                        ng-options="projectName for projectName in select.projectNameOptions">
+                </select>
+            </div>
+
+            <label class="col-sm-1 control-label padding0 textRight">DOL相对路径</label>
+
+            <div class="col-sm-3">
+                <input type="text" class="width-80" ng-model="dolPath" ng-trim="true" ng-keypress="enterPress($event)">
+                <strong>*</strong>
+                <span class="help-button" tooltip-placement="top"
+                      tooltip="DOL文件在gitpub项目中的相对路径">?</span>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="col-sm-1"></div>
+                <button class="btn btn-primary btn-sm col-sm-4" type="button" ng-click="importGit()"
+                        ng-disabled="isLoading">
+                    <i class="icon-search"></i>导入
+                </button>
+                <div class="col-sm-1"></div>
+                <button class="btn btn-success btn-sm col-sm-4" type="reset" ng-click="skipGit()"
+                        ng-disabled="isLoading">
+                    <i class="icon-undo"></i>跳过
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="col-xs-12 text-center" ng-show="isLoading">
+    <div class="loading" style="color: #000000;width: auto">{{loadingMsg}}</div>
+</div>
+
+<button class="btn-link pull-right bigger-110" ng-show="showConfig"
+        ng-click="reImport()">
+    重新导入dol
+</button>
+
+<form class="form-vertical" ng-show="showConfig" name="scheduleConfigForm" novalidate>
+<div class="col-xs-12  col-sm-12">
+    <h4 class="header smaller lighter blue">
+                                        <span> <strong>调度配置信息</strong>
+                                        </span>
+    </h4>
+</div>
+<div class="col-xs-12  col-sm-1"></div>
+<div class="col-xs-12">
+    <div class="col-xs-12 form-group">
+        <!--<label class="col-sm-1 control-label padding0 textRight">结果表名</label>-->
+
+        <!--<div class="col-sm-3">-->
+        <!--<input type="text" class="width-80" ng-change="checkTableName()" ng-model="tableName" ng-trim="true"-->
+        <!--required>-->
+        <!--<strong>*</strong>-->
+        <!--</div>-->
+
+        <label class="col-sm-1 control-label padding0 textRight">任务名称</label>
+
+        <div class="col-sm-3">
+            <input type="text" class="width-80" ng-model="taskName"
+                   ng-change="checkTaskName()" ng-trim="true">
+        </div>
+
+        <label class="col-sm-1 control-label textRight">开发者</label>
+
+        <div class="col-sm-3">
+                <span class="block input-icon input-icon-right">
+					<input type="text" ng-model="developer" placeholder="不限"
+                           typeahead="developer as developer.Text for developer in developers | filter:$viewValue"
+                           class="width-80">
+			    </span>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">执行频率</label>
+
+        <div class="col-sm-3">
+            <input type="text" class="width-80" name="freq" ng-model="frequency">
+            <button class="help-button" tooltip-placement="top" tooltip="具体写法请点击" ng-click="frequencyHelp()">?
+            </button>
+        </div>
+    </div>
+
+
+    <div class="col-xs-12 form-group">
+        <label class="col-sm-1 control-label padding0 textRight">任务组</label>
+
+        <div class="col-sm-3">
+            <select name="taskGroup" class="width-80" ng-model="taskGroup"
+                    ng-options="group.ID as group.Text for group in select.taskGroupOptions">
+            </select>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">周期</label>
+
+        <div class="col-sm-3">
+            <select name="taskCycle" class="width-80" ng-model="cycle"
+                    ng-options="k as v for (k,v) in select.cycleOptions">
+            </select>
+        </div>
+
+
+        <label class="col-sm-1 control-label padding0 textRight">优先级</label>
+
+        <div class="col-sm-3">
+            <select name="taskPriority" class="width-80" ng-model="priority"
+                    ng-options="priority.ID as priority.Text for priority in select.priorityOptions">
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12 form-group">
+        <label class="col-sm-1 control-label padding0 textRight">失败重跑</label>
+
+        <div class="col-sm-3">
+            <select name="recall" class="width-80" ng-model="ifRecall"
+                    ng-options="ifRecall.ID as ifRecall.Text for ifRecall in select.ifRecallOptions"></select>
+            </select>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">重跑次数上限</label>
+
+        <div class="col-sm-3">
+            <select name="recallLimit" class="width-80" ng-model="recallLimit"
+                    ng-options="recallLimit for recallLimit in select.recallLimitOptions"></select>
+            </select>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">失败重跑间隔</label>
+
+        <div class="col-sm-3">
+            <select name="recallInterval" class="width-80" ng-model="recallInterval"
+                    ng-options="recallInterval.ID as recallInterval.Text for recallInterval in select.recallIntervalOptions"></select>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12 form-group">
+
+        <label class="col-sm-1 control-label padding0 textRight">成功返回值</label>
+
+        <div class="col-sm-3">
+            <input type="text" class="width-80" ng-model="successCode" ng-trim="true">
+            <strong>*</strong>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">等待返回码</label>
+
+        <div class="col-sm-3">
+            <input type="text" class="width-80" ng-model="waitCode" ng-trim="true">
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">偏移量</label>
+
+        <div class="col-sm-3">
+            <select class="width-80" name="taskPeriod" ng-model="offset"
+                    ng-options="offset for offset in select.offsetOptions"></select>
+            </select>
+                <span class="help-button" tooltip-placement="top"
+                      tooltip="D：天级偏移，M：月级偏移，字母后的数字表示具体的偏移值，D0：不偏移，D1：向前偏移一天，M2：向前偏移两月">?</span>
+        </div>
+
+    </div>
+
+    <div class="col-xs-12 form-group">
+
+        <label class="col-sm-1 control-label padding0 textRight"
+                >超时时间</label>
+
+        <div class="col-sm-3">
+            <select class="width-80" name="taskTimeout" ng-model="timeout"
+                    ng-options="timeout.ID as timeout.Text for timeout in select.timeoutOptions" required>
+            </select>
+                <span class="help-button" tooltip-placement="top"
+                      tooltip="当任务执行时间超过指定时间后，调度置其状态为timeout">?</span>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">执行命令</label>
+
+        <div class="col-sm-7">
+            <input type="text" class="width-95" ng-model="para1" ng-trim="true">
+            <strong>*</strong>
+            <!--<textarea type="text" rows=5 class="width-90" name="freq" ng-model="command">-->
+            <!--</textarea>-->
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12  col-sm-12">
+    <h4 class="header smaller lighter blue">
+                                        <span> <strong>调度依赖信息</strong>
+                                        </span>
+    </h4>
+</div>
+<div class="col-xs-12  col-sm-1"></div>
+
+<div class="col-xs-12" style="padding-bottom: 20px">
+    <div class="col-xs-12 width-100">
+        <div class="table-header">前驱依赖</div>
+        <div class="table-responsive">
+            <div class="dataTables_wrapper" role="grid">
+                <table class="table table-striped table-bordered table-hover dataTable">
+                    <thead>
+                    <tr role="row">
+                        <th>任务ID</th>
+                        <th>任务名称</th>
+                        <th>任务周期</th>
+                        <th>偏移量</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="dependenceTask in dependenceTasks">
+                        <td>{{dependenceTask.taskId}}</td>
+                        <td>{{dependenceTask.taskName}}</td>
+                        <td>
+                                <span class="label {{getExecutionCycleLabel(dependenceTask.cycle)}}">{{getCycleText(dependenceTask.cycle)}}
+                            </span>
+                        </td>
+                        <td>
+                            <select class="width-80" name="taskPeriod" ng-model="dependenceTasks[$index].cycleGap"
+                                    ng-options="offset for offset in {{getOffsetOptions(dependenceTask.cycle)}}"></select>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn-link ng-scope"
+                                    ng-click="deleteDependenceTask($index)"
+                                    tooltip-placement="top" tooltip="删除依赖">
+                                <i class="icon-remove bigger-150"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row" id="addDependencyButton">
+                    <button class="btn-link ng-scope" ng-click="showDependenceDialog()"
+                            tooltip-placement="top"
+                            tooltip="添加依赖">
+                        <i class="icon-plus bigger-180"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+
+<div class="step-pane {{isActive(1)}}" ng-show="isShow(1)">
+
+<div ng-controller="CalculateTableConfigCtrl" class="page-content" style="margin-bottom: 40px">
+<div class="col-xs-12" style="margin-bottom: 20px">
+    <alert ng-show="alert.isShow" type="alert.type" close="closeAlert()">{{alert.msg}}</alert>
+</div>
+<div class="col-xs-12">
+<form class="form-vertical padding-top-6">
+    <div class="col-xs-12">
+        <div class="col-xs-12 form-group">
+            <label class="col-sm-1 control-label padding0 textRight">存在目标表</label>
+
+            <div class="col-sm-2">
+                <select name="taskGroup" class="width-80" ng-model="hasTargetTable"
+                        ng-options="group.ID as group.Text for group in hasTargetTableOptions"
+                        ng-disabled="hasTargetTableDisabled || isLoading">
+                </select>
+                <span class="help-button" tooltip-placement="top"
+                      tooltip="如果该任务需要写入到目标表请务必选择是，否则请选择否">?</span>
+            </div>
+
+            <label class="col-sm-1 control-label padding0 textRight" ng-show="hasTargetTable == 1">数据库名</label>
+
+            <div class="col-sm-2" ng-show="hasTargetTable == 1">
+                <input type="text" class="width-100" ng-model="DBName" disabled>
+            </div>
+
+            <label class="col-sm-1 control-label padding0 textRight" ng-show="hasTargetTable == 1">表名</label>
+
+            <div class="col-sm-3" ng-show="hasTargetTable == 1">
+                <input type="text" class="width-80" ng-model="tableName"
+                       typeahead="table for table in allTables|filter:$viewValue|limitTo:30"
+                       ng-keypress="enterPress($event)" ng-disabled="isLoading">
+            </div>
+
+            <button class="btn btn-primary btn-sm col-sm-1" ng-click="submitSearch()"
+                    ng-disabled="isLoading" ng-show="hasTargetTable == 1"><i
+                    class="icon-search"></i>
+                查询
+            </button>
+
+        </div>
+    </div>
+</form>
+
+<div class="col-xs-12 text-center" ng-show="isLoading">
+    <div class="loading" style="color: #000000;width: auto">{{loadingMsg}}</div>
+</div>
+
+
+<form class="form-vertical" ng-show="hasGetTableInfo" name="scheduleConfigForm" novalidate>
+<div class="col-xs-12  col-sm-12">
+    <h4 class="header smaller lighter blue">
+        <span> <strong>表信息</strong></span>
+    </h4>
+</div>
+
+<div class="col-xs-12">
+    <div class="col-xs-12 form-group">
+        <label class="col-sm-1 control-label padding0 textRight">表的注释</label>
+
+        <div class="col-xs-12  col-sm-3">
+            <input type="text" id="inputWarning2" class="width-80"
+                   ng-model="buildTabParaDO.tableComment"><strong>*</strong>
+        </div>
+
+        <label class="col-sm-1 control-label padding0 textRight">表的类型</label>
+
+        <div class="col-xs-12  col-sm-3">
+            <input type="text" id="inputWarning4" ng-model="buildTabParaDO.table.tableType" class="width-80"
+                   disabled>
+        </div>
+        <label class="col-sm-1 control-label padding0 textRight">刷新周期</label>
+
+        <div class="col-xs-12  col-sm-3">
+            <select id="inputWarning6" ng-model="buildTabParaDO.refreshType" class="width-80"
+                    ng-options="type.ID as type.Text for type in tableRefreshTypes"></select>
+            <strong>*</strong>
+        </div>
+    </div>
+
+    <div class="col-xs-12 form-group">
+        <label class="col-sm-1 control-label padding0 textRight">路径</label>
+
+        <div class="col-xs-12  col-sm-3">
+            <input type="text" id="inputWarning3" ng-model="buildTabParaDO.table.tableLocation"
+                   ng-disabled="buildTabParaDO.table.tableType=='MANAGED_TABLE'" class="width-80">
+            <strong>*</strong>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12  col-sm-12">
+    <h4 class="header smaller lighter blue">
+        <span> <strong>授权信息</strong></span>
+    </h4>
+</div>
+<div class="col-xs-12">
+    <div class="col-xs-12 form-group">
+        <label class="col-sm-1 control-label padding0 textRight">线上组帐号</label>
+
+        <div class="col-xs-12  col-sm-3">
+            <select id="inputWarning8" ng-model="onLineGroup" class="width-80"
+                    ng-options="group for group in onLineGroupList"></select>
+        </div>
+        <label class="col-sm-1 control-label padding0 textRight">线下组帐号</label>
+
+        <div class="col-xs-12  col-sm-3">
+            <select id="inputWarning9" ng-model="offLineGroup" class="width-80"
+                    ng-options="group for group in offLineGroupList"></select>
+        </div>
+    </div>
+    <div class="form-group row " ng-show="onLineGroupList.length == 0">
+        <div class="col-xs-12  col-sm-2"></div>
+        <div class="col-xs-12  col-sm-10">
+            <span style="color: red">提示: 该登录用户没有线上组帐号，如果建表将没有该线上表的读写权限，请先加入自己的用户组</span>
+        </div>
+    </div>
+    <div class="form-group row " ng-show="offLineGroupList.length == 0">
+        <div class="col-xs-12  col-sm-2"></div>
+        <div class="col-xs-12  col-sm-10">
+            <span style="color: red">提示: 该登录用户没有线下组帐号，如果建表将没有该线下表的读写权限，请先加入自己的用户组</span>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12  col-sm-12">
+    <h4 class="header smaller lighter blue">
+        <span><strong>列信息</strong></span>
+    </h4>
+</div>
+
+<div class="col-xs-12">
+    <div class="table-responsive" style="border: lightblue thin solid">
+        <div class="dataTables_wrapper" role="grid">
+            <div class="row" ng-controller="SyncTableToolWatchCtrl">
+                <div class="col-sm-6">
+                    <div class="dataTables_length">
+                        <label>
+                            每页显示
+                            <select ng-model="showColumnTable.selectedRecordPerPage"
+                                    ng-options="rpp for rpp in showColumnTable.recordPerPageOptions"
+                                    required></select>
+                            条记录
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="dataTables_filter">
+                        <label>
+                            过滤:
+                            <input type="text" ng-model="showColumnTable.query"></label>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover dataTable" style="table-layout:fixed;">
+                    <thead>
+                    <tr role="row">
+                        <th width="10%">序号</th>
+                        <th width="20%" class="{{showColumnTable.getSortingClass('columnName')}}"
+                            ng-click="showColumnTable.predicate = 'columnName'; showColumnTable.reverse=!showColumnTable.reverse">
+                            列名
+                        </th>
+                        <th width="20%" class="{{showColumnTable.getSortingClass('columnType')}} "
+                            ng-click="showColumnTable.predicate = 'columnType'; showColumnTable.reverse=!showColumnTable.reverse">
+                            类型
+                        </th>
+                        <th width="50%">注释</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="table in showColumnTable.displayedDataList.slice(showColumnTable.startIndex-1, showColumnTable.endIndex)">
+                        <td width="10%">{{getSequenceNum($index)}}</td>
+                        <td width="20%">{{table.columnName}}</td>
+                        <td width="20%">
+                            <input type="text" ng-model="table.columnType" class="width-75" disabled>
+                        </td>
+                        <td width="50%">
+                            <input type="text"
+                                   ng-model="buildTabParaDO.columnDOList[getSequenceNum($index)].columnComment"
+                                   class="width-75">
+                                            <span class=" light-red " tooltip-placement="top"
+                                                  tooltip-html-unsafe="注释必填"><strong>*</strong>
+                                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="dataTables_info">
+                            展示第{{showColumnTable.startIndex}}条记录至第{{showColumnTable.endIndex}}条记录（总计{{showColumnTable.total}}条记录）
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="dataTables_paginate paging_bootstrap">
+                            <ul class="pagination" style="display: block">
+                                <li class="{{showColumnTable.getDisableLabelforPrevious()}}">
+                                    <a href="" ng-click="showColumnTable.gotoFirstPage()"> <i
+                                            class="icon-double-angle-left"></i>
+                                    </a>
+                                </li>
+                                <li class="{{showColumnTable.getDisableLabelforPrevious()}}">
+                                    <a href="" ng-click="showColumnTable.previousPage()">
+                                        <i class="icon-angle-left"></i>
+                                    </a>
+                                </li>
+                                <li ng-repeat="num in showColumnTable.getCurrentPageNumDisplay()"
+                                    class="{{showColumnTable.getActiveLabel(num)}}">
+                                    <a href=""
+                                       ng-click="showColumnTable.changePage(num)">{{num}}</a>
+                                </li>
+                                <li class="{{showColumnTable.getDisableLabelforNext()}}">
+                                    <a href="" ng-click="showColumnTable.nextPage()">
+                                        <i class="icon-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="{{showColumnTable.getDisableLabelforNext()}}">
+                                    <a href="" ng-click="showColumnTable.gotoLastPage()">
+                                        <i class="icon-double-angle-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="col-xs-12  col-sm-12" ng-show="buildTabParaDO.partitionColumnList.length != 0">
+    <h4 class="header smaller lighter blue">
+        <span><strong>分区字段信息</strong></span>
+    </h4>
+</div>
+
+<div class="col-xs-12  col-sm-12" ng-show="buildTabParaDO.partitionColumnList.length != 0">
+    <table class="table table-striped table-bordered table-hover dataTable" style="table-layout:fixed;">
+        <thead>
+        <tr role="row">
+            <th width="10%">序号</th>
+            <th width="20%">列名</th>
+            <th width="20%">类型</th>
+            <th width="50%">注释</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="partition in buildTabParaDO.partitionColumnList">
+            <td width="10%">{{$index}}</td>
+            <td width="20%">{{partition.columnName}}</td>
+            <td width="20%">{{partition.columnType}}</td>
+            <td width="50%">
+                <input type="text" ng-model="partition.columnComment" class="width-75">
+                         <span class=" light-red " tooltip-placement="top"
+                               tooltip-html-unsafe="注释必填"><strong>*</strong>
+                         </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+<div class="col-xs-12 bottom10">
+    <accordion close-others="true">
+        <accordion-group is-open="isopen">
+            <accordion-heading>
+                <i class="pull-left bigger-110"
+                   ng-class="{'icon-angle-down': isopen, 'icon-angle-right': !isopen0}"></i>
+                存储信息
+            </accordion-heading>
+            <div class="col-xs-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputWarning10"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">SerDe库</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning10"
+                                                                   ng-model="buildTabParaDO.table.tableSerde"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning11"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">输入格式</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning11"
+                                                                   ng-model="buildTabParaDO.table.tableInputformat"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning12"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">输出格式</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning12"
+                                                                   ng-model="buildTabParaDO.table.tableOutputformat"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputWarning13"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">分桶数量</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning13"
+                                                                   ng-model="buildTbuildTabParaDOableInfo.table.tableBucketsNum"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning14"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">分桶列名</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning14"
+                                                                   ng-model="buildTabParaDO.table.tableBucketscol"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning15"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">排序列名</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning15"
+                                                                   ng-model="buildTabParaDO.table.tableSortcol"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </accordion-group>
+        <accordion-group is-open="isopen1">
+            <accordion-heading>
+                <i class="pull-left bigger-110"
+                   ng-class="{'icon-angle-down': isopen1, 'icon-angle-right': !isopen0}"></i>
+                存储描述参数
+            </accordion-heading>
+            <div class="col-xs-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputWarning16"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">集合分隔符</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning16"
+                                                                   ng-model="buildTabParaDO.table.parameters['colelction.delim']"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning17"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">列分隔符</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning17"
+                                                                   ng-model="buildTabParaDO.table.parameters['field.delim']"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning18"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">行分隔符</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning18"
+                                                                   ng-model="buildTabParaDO.table.parameters['line.delim']"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputWarning19"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">散列键值分隔符</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning19"
+                                                                   ng-model="buildTabParaDO.table.parameters['mapkey.delim']"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                        <label for="inputWarning20"
+                               class="col-xs-12 col-sm-1 control-label no-padding-right">序列化格式</label>
+
+                        <div class="col-xs-12  col-sm-3">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <input type="text" id="inputWarning20"
+                                                                   ng-model="buildTabParaDO.table.parameters['serialization.delim']"
+                                                                   class="width-80" disabled></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </accordion-group>
+    </accordion>
+</div>
+
+
+</form>
+</div>
+</div>
+</div>
+
+</calculate-config>
+</div>
+
+
+

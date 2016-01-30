@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="loadcfg">
+	<typeAlias type="com.dianping.data.warehouse.domain.model.WormholeDO" alias="load" />
+
+    <resultMap id="load" class="load" >
+        <result property="taskId" column="task_id" />
+        <result property="connectProps" column="connectProps" />
+        <result property="parameterMapStr" column="parameter_map" />
+        <result property="type" column="type" />
+        <result property="conditionCol" column="condition_column" />
+    </resultMap>
+
+
+
+	<statement id="getLoadCfgListByID" resultMap="load" parameterClass="java.lang.Integer">
+		SELECT * FROM etl_load_cfg WHERE task_id=#id:INTEGER#
+  	</statement>
+
+    <insert id="insertLoadCfg" parameterClass="java.util.List">
+        INSERT INTO etl_load_cfg
+        (
+        task_id,connectprops,parameter_map,type
+        )
+        VALUES
+        <iterate  conjunction ="," >
+            (
+            #load[].taskId#,#load[].connectProps#,#load[].parameterMapStr#,#load[].type#
+            )
+        </iterate>
+    </insert>
+
+    <statement id="deleteLoadCfgByID" parameterClass="java.lang.Integer" >
+        delete from etl_load_cfg where task_id=#id:Integer#
+    </statement>
+
+    <statement id="createTable" parameterClass="java.lang.String">
+      #ddl:string#
+    </statement>
+
+    <update id="updateTest" parameterClass="java.lang.String" >
+        create #ddl#
+    </update>
+
+
+</sqlMap>
